@@ -20,8 +20,13 @@ router.post('/search', async (req, res) => {
 
     // Check if we should use external API or local database
     if (process.env.FLIGHT_API_KEY && process.env.FLIGHT_API_BASE_URL) {
+      console.log('Using SerpAPI with key:', process.env.FLIGHT_API_KEY ? 'Present' : 'Missing');
+      
       // Use SerpAPI's Google Flights endpoint
-      const response = await fetch(`https://serpapi.com/search?engine=google_flights&api_key=${process.env.FLIGHT_API_KEY}&departure_id=${departureCity}&arrival_id=${arrivalCity}&outbound_date=${departureDate}&return_date=${returnDate}`, {
+      const apiUrl = `https://serpapi.com/search?engine=google_flights&api_key=${process.env.FLIGHT_API_KEY}&departure_id=${departureCity}&arrival_id=${arrivalCity}&outbound_date=${departureDate}&return_date=${returnDate}`;
+      console.log('Making request to:', apiUrl);
+
+      const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -30,12 +35,23 @@ router.post('/search', async (req, res) => {
       });
 
       if (!response.ok) {
-        return res.status(500).json({ message: 'External flight API request failed' });
+        const errorText = await response.text();
+        console.error('SerpAPI Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        return res.status(500).json({ 
+          message: 'External flight API request failed',
+          details: `Status: ${response.status}, Error: ${errorText}`
+        });
       }
 
       const flights = await response.json();
+      console.log('SerpAPI Response:', flights);
       return res.json(flights);
     } else {
+      console.log('Using local database (no API key or base URL configured)');
       // Use local database
       const flights = await Flight.find({
         departureCity: { $regex: new RegExp(departureCity, 'i') },
@@ -50,7 +66,10 @@ router.post('/search', async (req, res) => {
     }
   } catch (error) {
     console.error('Error searching flights:', error);
-    return res.status(500).json({ message: 'Error searching flights' });
+    return res.status(500).json({ 
+      message: 'Error searching flights',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
