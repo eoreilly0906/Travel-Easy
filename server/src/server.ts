@@ -6,6 +6,7 @@ import { ApolloServer } from '@apollo/server';// Note: Import from @apollo/serve
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
 import { authenticateToken } from './utils/auth.js';
+import flightRoutes from './routes/flightRoutes.js';
 
 const server = new ApolloServer({
   typeDefs,
@@ -21,6 +22,9 @@ const startApolloServer = async () => {
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
+
+  // REST API routes
+  app.use('/api/flights', flightRoutes);
 
   app.use('/graphql', expressMiddleware(server as any,
     {
