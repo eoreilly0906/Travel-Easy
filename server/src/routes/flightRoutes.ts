@@ -1,5 +1,5 @@
 import express from 'express';
-import Flight from '../models/Flight';
+import Flight from '../models/Flight.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,24 +20,17 @@ router.post('/search', async (req, res) => {
 
     // Check if we should use external API or local database
     if (process.env.FLIGHT_API_KEY && process.env.FLIGHT_API_BASE_URL) {
-      // Use external flight API
-      const response = await fetch(`${process.env.FLIGHT_API_BASE_URL}/search`, {
-        method: 'POST',
+      // Use SerpAPI's Google Flights endpoint
+      const response = await fetch(`https://serpapi.com/search?engine=google_flights&api_key=${process.env.FLIGHT_API_KEY}&departure_id=${departureCity}&arrival_id=${arrivalCity}&outbound_date=${departureDate}&return_date=${returnDate}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.FLIGHT_API_KEY}`,
         },
-        body: JSON.stringify({
-          departureCity,
-          arrivalCity,
-          departureDate,
-          returnDate
-        }),
         signal: AbortSignal.timeout(Number(process.env.FLIGHT_API_TIMEOUT) || 5000)
       });
 
       if (!response.ok) {
-        throw new Error('External flight API request failed');
+        return res.status(500).json({ message: 'External flight API request failed' });
       }
 
       const flights = await response.json();
@@ -53,16 +46,16 @@ router.post('/search', async (req, res) => {
         }
       }).sort({ departureTime: 1 });
 
-      res.json(flights);
+      return res.json(flights);
     }
   } catch (error) {
     console.error('Error searching flights:', error);
-    res.status(500).json({ message: 'Error searching flights' });
+    return res.status(500).json({ message: 'Error searching flights' });
   }
 });
 
 // Get all flights (for testing)
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const flights = await Flight.find();
     res.json(flights);

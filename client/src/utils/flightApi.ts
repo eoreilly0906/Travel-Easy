@@ -20,7 +20,7 @@ interface Flight {
 
 export const searchFlights = async (params: FlightSearchParams): Promise<Flight[]> => {
   try {
-    const response = await fetch('/api/flights/search', {
+    const response = await fetch('http://localhost:3001/api/flights/search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
