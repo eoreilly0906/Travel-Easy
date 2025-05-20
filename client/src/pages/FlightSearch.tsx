@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { searchFlights } from '../utils/flightApi';
 
 interface FlightSearchForm {
   departureCity: string;
@@ -10,16 +9,23 @@ interface FlightSearchForm {
 }
 
 interface Flight {
-  _id: string;
-  airline: string;
-  flightNumber: string;
-  departureCity: string;
-  arrivalCity: string;
-  departureTime: string;
-  arrivalTime: string;
+  flights: Array<{
+    airline: string;
+    flightNumber: string;
+    departureTime: string;
+    arrivalTime: string;
+  }>;
+  total_duration: number;
+  carbon_emissions: {
+    this_flight: number;
+    typical_for_route: number;
+    difference_percentage: number;
+  };
   price: number;
-  duration: string;
-  availableSeats: number;
+  type: string;
+  airline_logo: string;
+  extensions: string[];
+  departure_token: string;
 }
 
 const FlightSearch: React.FC = () => {
@@ -48,8 +54,20 @@ const FlightSearch: React.FC = () => {
     setError(null);
 
     try {
-      const results = await searchFlights(searchForm);
-      setFlights(results);
+      const response = await fetch('http://localhost:3001/api/flights/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchForm),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch flights');
+      }
+
+      const data = await response.json();
+      setFlights(data.best_flights || []);
     } catch (err) {
       setError('Failed to fetch flights. Please try again.');
       console.error('Error searching flights:', err);
@@ -58,9 +76,10 @@ const FlightSearch: React.FC = () => {
     }
   };
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
   };
 
   return (
@@ -68,27 +87,27 @@ const FlightSearch: React.FC = () => {
       <h1>Flight Search</h1>
       <form onSubmit={handleSubmit} className="flight-search-form">
         <div className="form-group">
-          <label htmlFor="departureCity">From:</label>
+          <label htmlFor="departureCity">From (Airport Code):</label>
           <input
             type="text"
             id="departureCity"
             name="departureCity"
             value={searchForm.departureCity}
             onChange={handleInputChange}
-            placeholder="Departure City"
+            placeholder="e.g., IAH"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="arrivalCity">To:</label>
+          <label htmlFor="arrivalCity">To (Airport Code):</label>
           <input
             type="text"
             id="arrivalCity"
             name="arrivalCity"
             value={searchForm.arrivalCity}
             onChange={handleInputChange}
-            placeholder="Arrival City"
+            placeholder="e.g., MSY"
             required
           />
         </div>
@@ -132,28 +151,37 @@ const FlightSearch: React.FC = () => {
         <div className="flight-results">
           <h2>Available Flights</h2>
           <div className="flight-list">
-            {flights.map((flight) => (
-              <div key={flight._id} className="flight-card">
+            {flights.map((flight, index) => (
+              <div key={index} className="flight-card">
                 <div className="flight-header">
-                  <h3>{flight.airline}</h3>
-                  <span className="flight-number">{flight.flightNumber}</span>
+                  <img 
+                    src={flight.airline_logo} 
+                    alt={flight.flights[0]?.airline} 
+                    className="airline-logo"
+                    style={{ height: '40px', width: 'auto' }}
+                  />
+                  <span className="flight-type">{flight.type}</span>
                 </div>
                 <div className="flight-details">
                   <div className="flight-time">
-                    <div>
-                      <strong>Departure:</strong>
-                      <p>{formatTime(flight.departureTime)}</p>
-                      <small>{flight.departureCity}</small>
-                    </div>
-                    <div>
-                      <strong>Arrival:</strong>
-                      <p>{formatTime(flight.arrivalTime)}</p>
-                      <small>{flight.arrivalCity}</small>
-                    </div>
+                    {flight.flights.map((segment, idx) => (
+                      <div key={idx} className="flight-segment">
+                        <div>
+                          <strong>Departure:</strong>
+                          <p>{segment.departureTime}</p>
+                          <small>{searchForm.departureCity}</small>
+                        </div>
+                        <div>
+                          <strong>Arrival:</strong>
+                          <p>{segment.arrivalTime}</p>
+                          <small>{searchForm.arrivalCity}</small>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                   <div className="flight-info">
-                    <p><strong>Duration:</strong> {flight.duration}</p>
-                    <p><strong>Available Seats:</strong> {flight.availableSeats}</p>
+                    <p><strong>Duration:</strong> {formatDuration(flight.total_duration)}</p>
+                    <p><strong>Carbon Impact:</strong> {flight.carbon_emissions.difference_percentage}% vs typical</p>
                     <p className="flight-price">${flight.price}</p>
                   </div>
                 </div>
