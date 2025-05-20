@@ -30,7 +30,10 @@ const resolvers = {
             // Create a new user with the provided username, email, and password
             const user = await User.create({ ...input });
             // Sign a token with the user's information
-            const token = signToken(user.username, user.email, user._id);
+            const token = signToken({
+                _id: user._id,
+                username: user.username
+            });
             // Return the token and the user
             return { token, user };
         },
@@ -48,7 +51,10 @@ const resolvers = {
                 throw new AuthenticationError('Could not authenticate user.');
             }
             // Sign a token with the user's information
-            const token = signToken(user.username, user.email, user._id);
+            const token = signToken({
+                _id: user._id,
+                username: user.username
+            });
             // Return the token and the user
             return { token, user };
         },

@@ -5,8 +5,9 @@ import db from './config/connection.js';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
-import { authenticateToken } from './utils/auth.js';
+import { authContext } from './utils/auth.js';
 import flightRoutes from './routes/flightRoutes.js';
+import savedFlightRoutes from './routes/savedFlightRoutes.js';
 const server = new ApolloServer({
     typeDefs,
     resolvers
@@ -25,8 +26,9 @@ const startApolloServer = async () => {
     app.use(express.json());
     // REST API routes
     app.use('/api/flights', flightRoutes);
+    app.use('/api/saved-flights', savedFlightRoutes);
     app.use('/graphql', expressMiddleware(server, {
-        context: authenticateToken
+        context: authContext
     }));
     if (process.env.NODE_ENV === 'production') {
         app.use(express.static(path.join(__dirname, '../client/dist')));
