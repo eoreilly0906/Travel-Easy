@@ -12,7 +12,16 @@ import savedFlightRoutes from './routes/savedFlightRoutes.js';
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  formatError: (formattedError, error) => {
+    console.error('GraphQL Error:', {
+      message: formattedError.message,
+      path: formattedError.path,
+      extensions: formattedError.extensions,
+      originalError: error
+    });
+    return formattedError;
+  }
 });
 
 const startApolloServer = async () => {

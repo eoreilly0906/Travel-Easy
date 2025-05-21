@@ -1,28 +1,5 @@
 import mongoose from 'mongoose';
 
-interface IFlightSegment {
-  airline: string;
-  flightNumber: string;
-  departureTime: string;
-  arrivalTime: string;
-}
-
-interface ICarbonEmissions {
-  this_flight: number;
-  typical_for_route: number;
-  difference_percentage: number;
-}
-
-interface IFlightDetails {
-  flights: IFlightSegment[];
-  total_duration: number;
-  carbon_emissions: ICarbonEmissions;
-  price: number;
-  type: string;
-  airline_logo: string;
-  departure_token: string;
-}
-
 const flightSegmentSchema = new mongoose.Schema({
   airline: {
     type: String,

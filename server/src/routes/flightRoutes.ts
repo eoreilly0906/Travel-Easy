@@ -49,7 +49,29 @@ router.post('/search', async (req, res) => {
 
       const flights = await response.json();
       console.log('SerpAPI Response:', flights);
-      return res.json(flights);
+
+      // Transform the SerpAPI response to our expected format
+      const transformedFlights = flights.best_flights?.map((flight: any) => ({
+        flights: flight.flights.map((segment: any) => ({
+          airline: segment.airline || 'Unknown Airline',
+          flightNumber: segment.flight_number || '',
+          departureTime: segment.departure_airport?.time || '',
+          arrivalTime: segment.arrival_airport?.time || ''
+        })),
+        total_duration: flight.total_duration || 0,
+        carbon_emissions: {
+          this_flight: flight.carbon_emissions?.this_flight || 0,
+          typical_for_route: flight.carbon_emissions?.typical_for_route || 0,
+          difference_percentage: flight.carbon_emissions?.difference_percentage || 0
+        },
+        price: flight.price || 0,
+        type: flight.type || 'Standard',
+        airline_logo: flight.airline_logo || '',
+        departure_token: flight.departure_token || ''
+      })) || [];
+
+      console.log('Transformed flights:', JSON.stringify(transformedFlights, null, 2));
+      return res.json({ best_flights: transformedFlights });
     } else {
       console.log('Using local database (no API key or base URL configured)');
       // Use local database
