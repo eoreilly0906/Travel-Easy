@@ -117,6 +117,20 @@ interface FlightSegment {
   often_delayed_by_over_30_min?: boolean;
 }
 
+interface TransformedFlightSegment {
+  airline: string;
+  flightNumber: string;
+  departureTime: string;
+  arrivalTime: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  duration: number;
+  airplane: string;
+  travelClass: string;
+  legroom: string;
+  extensions: string[];
+}
+
 interface CarbonEmissions {
   this_flight: number;
   typical_for_this_route: number;
@@ -151,6 +165,60 @@ interface SaveStatusMap {
   [key: string]: SaveStatus;
 }
 
+// Airport code mapping
+interface AirportInfo {
+  code: string;
+  name: string;
+  city: string;
+  country: string;
+}
+
+const AIRPORT_MAPPINGS: { [key: string]: AirportInfo[] } = {
+  'new york': [
+    { code: 'JFK', name: 'John F. Kennedy International', city: 'New York', country: 'USA' },
+    { code: 'LGA', name: 'LaGuardia', city: 'New York', country: 'USA' },
+    { code: 'EWR', name: 'Newark Liberty International', city: 'New York', country: 'USA' }
+  ],
+  'los angeles': [
+    { code: 'LAX', name: 'Los Angeles International', city: 'Los Angeles', country: 'USA' }
+  ],
+  'chicago': [
+    { code: 'ORD', name: "O'Hare International", city: 'Chicago', country: 'USA' },
+    { code: 'MDW', name: 'Midway International', city: 'Chicago', country: 'USA' }
+  ],
+  'houston': [
+    { code: 'IAH', name: 'George Bush Intercontinental', city: 'Houston', country: 'USA' },
+    { code: 'HOU', name: 'William P. Hobby', city: 'Houston', country: 'USA' }
+  ],
+  'miami': [
+    { code: 'MIA', name: 'Miami International', city: 'Miami', country: 'USA' }
+  ],
+  'london': [
+    { code: 'LHR', name: 'Heathrow', city: 'London', country: 'UK' },
+    { code: 'LGW', name: 'Gatwick', city: 'London', country: 'UK' },
+    { code: 'STN', name: 'Stansted', city: 'London', country: 'UK' }
+  ],
+  'paris': [
+    { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'France' },
+    { code: 'ORY', name: 'Orly', city: 'Paris', country: 'France' }
+  ],
+  'tokyo': [
+    { code: 'HND', name: 'Haneda', city: 'Tokyo', country: 'Japan' },
+    { code: 'NRT', name: 'Narita', city: 'Tokyo', country: 'Japan' }
+  ],
+  'sydney': [
+    { code: 'SYD', name: 'Kingsford Smith', city: 'Sydney', country: 'Australia' }
+  ],
+  'dubai': [
+    { code: 'DXB', name: 'Dubai International', city: 'Dubai', country: 'UAE' }
+  ]
+};
+
+interface CitySearchResult {
+  city: string;
+  airports: AirportInfo[];
+}
+
 const FlightSearch: React.FC = () => {
   const [searchForm, setSearchForm] = useState<FlightSearchForm>({
     departureCity: '',
@@ -158,6 +226,13 @@ const FlightSearch: React.FC = () => {
     departureDate: '',
     returnDate: '',
   });
+
+  const [departureAirports, setDepartureAirports] = useState<AirportInfo[]>([]);
+  const [arrivalAirports, setArrivalAirports] = useState<AirportInfo[]>([]);
+  const [selectedDepartureAirport, setSelectedDepartureAirport] = useState<string>('');
+  const [selectedArrivalAirport, setSelectedArrivalAirport] = useState<string>('');
+  const [showAirportSelection, setShowAirportSelection] = useState<boolean>(false);
+  const [activeSelection, setActiveSelection] = useState<'departure' | 'arrival' | null>(null);
 
   const [flights, setFlights] = useState<Flight[]>(() => {
     try {
@@ -201,17 +276,65 @@ const FlightSearch: React.FC = () => {
     }
   }, [saveStatus]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchAirports = (cityName: string): CitySearchResult[] => {
+    const normalizedCity = cityName.toLowerCase().trim();
+    const results: CitySearchResult[] = [];
+
+    Object.entries(AIRPORT_MAPPINGS).forEach(([key, airports]) => {
+      if (key.includes(normalizedCity)) {
+        results.push({
+          city: airports[0].city,
+          airports
+        });
+      }
+    });
+
+    return results;
+  };
+
+  const handleCityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSearchForm(prev => ({
       ...prev,
       [name]: value
     }));
+
+    if (value.length >= 2) {
+      const results = searchAirports(value);
+      if (name === 'departureCity') {
+        setDepartureAirports(results[0]?.airports || []);
+        setActiveSelection('departure');
+      } else {
+        setArrivalAirports(results[0]?.airports || []);
+        setActiveSelection('arrival');
+      }
+      setShowAirportSelection(true);
+    } else {
+      setShowAirportSelection(false);
+    }
+  };
+
+  const handleAirportSelection = (airport: AirportInfo, type: 'departure' | 'arrival') => {
+    if (type === 'departure') {
+      setSelectedDepartureAirport(airport.code);
+      setSearchForm(prev => ({
+        ...prev,
+        departureCity: `${airport.city} (${airport.code})`
+      }));
+    } else {
+      setSelectedArrivalAirport(airport.code);
+      setSearchForm(prev => ({
+        ...prev,
+        arrivalCity: `${airport.city} (${airport.code})`
+      }));
+    }
+    setShowAirportSelection(false);
+    setActiveSelection(null);
   };
 
   const validateSearchForm = (form: FlightSearchForm): void => {
-    if (!form.departureCity || !form.arrivalCity) {
-      throw new ValidationError('Departure and arrival cities are required');
+    if (!selectedDepartureAirport || !selectedArrivalAirport) {
+      throw new ValidationError('Please select airports for both departure and arrival cities');
     }
     if (!form.departureDate || !form.returnDate) {
       throw new ValidationError('Departure and return dates are required');
@@ -234,7 +357,11 @@ const FlightSearch: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(searchForm),
+        body: JSON.stringify({
+          ...searchForm,
+          departureCity: selectedDepartureAirport,
+          arrivalCity: selectedArrivalAirport
+        }),
       });
 
       if (!response.ok) {
@@ -295,7 +422,7 @@ const FlightSearch: React.FC = () => {
 
       validateFlightData(flight);
 
-      const flightSegments = flight.flights.map((segment: FlightSegment) => {
+      const flightSegments: TransformedFlightSegment[] = flight.flights.map((segment: FlightSegment) => {
         const { flight_number, departure_airport, arrival_airport, airline } = segment;
 
         if (!flight_number || !departure_airport?.time || !arrival_airport?.time || !airline) {
@@ -391,29 +518,55 @@ const FlightSearch: React.FC = () => {
       <h1 className="text-center mb-3">Flight Search</h1>
       <form onSubmit={handleSubmit} className="flight-search-form">
         <div className="form-group">
-          <label htmlFor="departureCity">From (Airport Code):</label>
+          <label htmlFor="departureCity">From:</label>
           <input
             type="text"
             id="departureCity"
             name="departureCity"
             value={searchForm.departureCity}
-            onChange={handleInputChange}
-            placeholder="e.g., IAH"
+            onChange={handleCityInputChange}
+            placeholder="Enter city name"
             required
           />
+          {showAirportSelection && activeSelection === 'departure' && (
+            <div className="airport-selection">
+              {departureAirports.map((airport) => (
+                <div
+                  key={airport.code}
+                  className="airport-option"
+                  onClick={() => handleAirportSelection(airport, 'departure')}
+                >
+                  {airport.name} ({airport.code})
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="form-group">
-          <label htmlFor="arrivalCity">To (Airport Code):</label>
+          <label htmlFor="arrivalCity">To:</label>
           <input
             type="text"
             id="arrivalCity"
             name="arrivalCity"
             value={searchForm.arrivalCity}
-            onChange={handleInputChange}
-            placeholder="e.g., MSY"
+            onChange={handleCityInputChange}
+            placeholder="Enter city name"
             required
           />
+          {showAirportSelection && activeSelection === 'arrival' && (
+            <div className="airport-selection">
+              {arrivalAirports.map((airport) => (
+                <div
+                  key={airport.code}
+                  className="airport-option"
+                  onClick={() => handleAirportSelection(airport, 'arrival')}
+                >
+                  {airport.name} ({airport.code})
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="form-group">
@@ -423,7 +576,7 @@ const FlightSearch: React.FC = () => {
             id="departureDate"
             name="departureDate"
             value={searchForm.departureDate}
-            onChange={handleInputChange}
+            onChange={handleCityInputChange}
             required
           />
         </div>
@@ -435,7 +588,7 @@ const FlightSearch: React.FC = () => {
             id="returnDate"
             name="returnDate"
             value={searchForm.returnDate}
-            onChange={handleInputChange}
+            onChange={handleCityInputChange}
             required
           />
         </div>
