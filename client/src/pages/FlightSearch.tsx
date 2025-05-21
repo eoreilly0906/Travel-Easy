@@ -3,6 +3,93 @@ import { useNavigate } from 'react-router-dom';
 import Auth from '../utils/auth';
 import '../App.css';
 
+// Custom error types
+class FlightError extends Error {
+  constructor(message: string, public code: string) {
+    super(message);
+    this.name = 'FlightError';
+  }
+}
+
+class ValidationError extends FlightError {
+  constructor(message: string) {
+    super(message, 'VALIDATION_ERROR');
+    this.name = 'ValidationError';
+  }
+}
+
+class APIError extends FlightError {
+  constructor(message: string, public status: number) {
+    super(message, 'API_ERROR');
+    this.name = 'APIError';
+  }
+}
+
+// Type guards
+const isAirport = (obj: unknown): obj is Airport => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'name' in obj &&
+    'id' in obj &&
+    'time' in obj &&
+    typeof (obj as Airport).name === 'string' &&
+    typeof (obj as Airport).id === 'string' &&
+    typeof (obj as Airport).time === 'string'
+  );
+};
+
+const isFlightSegment = (obj: unknown): obj is FlightSegment => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'departure_airport' in obj &&
+    'arrival_airport' in obj &&
+    'airline' in obj &&
+    'flight_number' in obj &&
+    isAirport((obj as FlightSegment).departure_airport) &&
+    isAirport((obj as FlightSegment).arrival_airport) &&
+    typeof (obj as FlightSegment).airline === 'string' &&
+    typeof (obj as FlightSegment).flight_number === 'string'
+  );
+};
+
+const isCarbonEmissions = (obj: unknown): obj is CarbonEmissions => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'this_flight' in obj &&
+    'typical_for_this_route' in obj &&
+    'difference_percent' in obj &&
+    typeof (obj as CarbonEmissions).this_flight === 'number' &&
+    typeof (obj as CarbonEmissions).typical_for_this_route === 'number' &&
+    typeof (obj as CarbonEmissions).difference_percent === 'number'
+  );
+};
+
+const isFlight = (obj: unknown): obj is Flight => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'flights' in obj &&
+    'total_duration' in obj &&
+    'carbon_emissions' in obj &&
+    'price' in obj &&
+    Array.isArray((obj as Flight).flights) &&
+    (obj as Flight).flights.every(isFlightSegment) &&
+    typeof (obj as Flight).total_duration === 'number' &&
+    isCarbonEmissions((obj as Flight).carbon_emissions) &&
+    typeof (obj as Flight).price === 'number'
+  );
+};
+
+// API response types
+interface FlightSearchResponse {
+  best_flights: Flight[];
+  status: 'success' | 'error';
+  message?: string;
+}
+
 interface FlightSearchForm {
   departureCity: string;
   arrivalCity: string;
@@ -10,24 +97,58 @@ interface FlightSearchForm {
   returnDate: string;
 }
 
+interface Airport {
+  name: string;
+  id: string;
+  time: string;
+}
+
+interface FlightSegment {
+  departure_airport: Airport;
+  arrival_airport: Airport;
+  duration: number;
+  airplane: string;
+  airline: string;
+  airline_logo: string;
+  travel_class: string;
+  flight_number: string;
+  legroom: string;
+  extensions: string[];
+  often_delayed_by_over_30_min?: boolean;
+}
+
+interface CarbonEmissions {
+  this_flight: number;
+  typical_for_this_route: number;
+  difference_percent: number;
+}
+
+interface Layover {
+  duration: number;
+  name: string;
+  id: string;
+  overnight?: boolean;
+}
+
 interface Flight {
-  flights: Array<{
-    airline: string;
-    flightNumber: string;
-    departureTime: string;
-    arrivalTime: string;
-  }>;
+  flights: FlightSegment[];
+  layovers?: Layover[];
   total_duration: number;
-  carbon_emissions: {
-    this_flight: number;
-    typical_for_route: number;
-    difference_percentage: number;
-  };
+  carbon_emissions: CarbonEmissions;
   price: number;
   type: string;
   airline_logo: string;
   extensions: string[];
   departure_token: string;
+}
+
+interface SaveStatus {
+  success: boolean;
+  message: string;
+}
+
+interface SaveStatusMap {
+  [key: string]: SaveStatus;
 }
 
 const FlightSearch: React.FC = () => {
@@ -39,25 +160,45 @@ const FlightSearch: React.FC = () => {
   });
 
   const [flights, setFlights] = useState<Flight[]>(() => {
-    const savedFlights = localStorage.getItem('flightSearchResults');
-    return savedFlights ? JSON.parse(savedFlights) : [];
+    try {
+      const savedFlights = localStorage.getItem('flightSearchResults');
+      return savedFlights ? JSON.parse(savedFlights) : [];
+    } catch (error) {
+      console.error('Error loading saved flights:', error);
+      return [];
+    }
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saveStatus, setSaveStatus] = useState<{ [key: string]: { success: boolean; message: string } }>(() => {
-    const savedStatus = localStorage.getItem('flightSaveStatus');
-    return savedStatus ? JSON.parse(savedStatus) : {};
+  const [saveStatus, setSaveStatus] = useState<SaveStatusMap>(() => {
+    try {
+      const savedStatus = localStorage.getItem('flightSaveStatus');
+      return savedStatus ? JSON.parse(savedStatus) : {};
+    } catch (error) {
+      console.error('Error loading save status:', error);
+      return {};
+    }
   });
+
   const navigate = useNavigate();
 
   // Update localStorage when flights change
   useEffect(() => {
-    localStorage.setItem('flightSearchResults', JSON.stringify(flights));
+    try {
+      localStorage.setItem('flightSearchResults', JSON.stringify(flights));
+    } catch (error) {
+      console.error('Error saving flights to localStorage:', error);
+    }
   }, [flights]);
 
   // Update localStorage when saveStatus changes
   useEffect(() => {
-    localStorage.setItem('flightSaveStatus', JSON.stringify(saveStatus));
+    try {
+      localStorage.setItem('flightSaveStatus', JSON.stringify(saveStatus));
+    } catch (error) {
+      console.error('Error saving status to localStorage:', error);
+    }
   }, [saveStatus]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,12 +209,26 @@ const FlightSearch: React.FC = () => {
     }));
   };
 
+  const validateSearchForm = (form: FlightSearchForm): void => {
+    if (!form.departureCity || !form.arrivalCity) {
+      throw new ValidationError('Departure and arrival cities are required');
+    }
+    if (!form.departureDate || !form.returnDate) {
+      throw new ValidationError('Departure and return dates are required');
+    }
+    if (new Date(form.departureDate) > new Date(form.returnDate)) {
+      throw new ValidationError('Return date must be after departure date');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
+      validateSearchForm(searchForm);
+
       const response = await fetch('http://localhost:3001/api/flights/search', {
         method: 'POST',
         headers: {
@@ -83,64 +238,77 @@ const FlightSearch: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch flights');
+        throw new APIError(`Failed to fetch flights: ${response.status} ${response.statusText}`, response.status);
       }
 
-      const data = await response.json();
-      console.log('Raw API response:', JSON.stringify(data, null, 2));
-      console.log('Best flights array:', JSON.stringify(data.best_flights, null, 2));
-      if (data.best_flights && data.best_flights.length > 0) {
-        console.log('First flight structure:', JSON.stringify(data.best_flights[0], null, 2));
-        if (data.best_flights[0].flights) {
-          console.log('First flight segments:', JSON.stringify(data.best_flights[0].flights, null, 2));
-        }
+      const data = await response.json() as FlightSearchResponse;
+      
+      if (!data.best_flights || !Array.isArray(data.best_flights)) {
+        throw new ValidationError('Invalid response format from server');
       }
-      setFlights(data.best_flights || []);
+
+      // Validate each flight in the response
+      data.best_flights.forEach((flight, index) => {
+        if (!isFlight(flight)) {
+          throw new ValidationError(`Invalid flight data at index ${index}`);
+        }
+      });
+
+      setFlights(data.best_flights);
     } catch (err) {
-      setError('Failed to fetch flights. Please try again.');
+      const errorMessage = err instanceof FlightError 
+        ? err.message 
+        : 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
       console.error('Error searching flights:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveFlight = async (flight: any, index: number) => {
+  const validateFlightData = (flight: Flight): void => {
+    if (!isFlight(flight)) {
+      throw new ValidationError('Invalid flight data structure');
+    }
+
+    flight.flights.forEach((segment, index) => {
+      if (!isFlightSegment(segment)) {
+        throw new ValidationError(`Invalid flight segment at index ${index}`);
+      }
+    });
+
+    if (!isCarbonEmissions(flight.carbon_emissions)) {
+      throw new ValidationError('Invalid carbon emissions data');
+    }
+  };
+
+  const handleSaveFlight = async (flight: Flight, index: number) => {
     if (!Auth.loggedIn()) {
       navigate('/login');
       return;
     }
 
     try {
-      console.log('Raw flight data:', flight);
-      console.log('Flight segments:', flight.flights);
-
-      // Check if flight is already saved
       if (saveStatus[`flight-${index}`]?.success) {
         return;
       }
 
-      // Validate and transform flight data
-      const flightSegments = flight.flights.map((segment: any) => {
-        console.log('Processing segment:', JSON.stringify(segment, null, 2));
-        
-        // Extract required fields from the API response
-        const flightNumber = segment.flight_number;
-        const departureTime = segment.departure_airport?.time;
-        const arrivalTime = segment.arrival_airport?.time;
-        const airline = segment.airline;
+      validateFlightData(flight);
 
-        // Validate required fields
-        if (!flightNumber || !departureTime || !arrivalTime || !airline) {
-          throw new Error(`Invalid flight data: missing required fields in flight segment: flightNumber=${!!flightNumber}, departureTime=${!!departureTime}, arrivalTime=${!!arrivalTime}, airline=${!!airline}`);
+      const flightSegments = flight.flights.map((segment: FlightSegment) => {
+        const { flight_number, departure_airport, arrival_airport, airline } = segment;
+
+        if (!flight_number || !departure_airport?.time || !arrival_airport?.time || !airline) {
+          throw new ValidationError(`Missing required fields in flight segment: flightNumber=${!!flight_number}, departureTime=${!!departure_airport?.time}, arrivalTime=${!!arrival_airport?.time}, airline=${!!airline}`);
         }
 
         return {
           airline,
-          flightNumber,
-          departureTime,
-          arrivalTime,
-          departureAirport: segment.departure_airport?.id || '',
-          arrivalAirport: segment.arrival_airport?.id || '',
+          flightNumber: flight_number,
+          departureTime: departure_airport.time,
+          arrivalTime: arrival_airport.time,
+          departureAirport: departure_airport.id || '',
+          arrivalAirport: arrival_airport.id || '',
           duration: segment.duration || 0,
           airplane: segment.airplane || '',
           travelClass: segment.travel_class || 'Economy',
@@ -169,8 +337,6 @@ const FlightSearch: React.FC = () => {
         returnDate: flight.flights[flight.flights.length - 1]?.arrival_airport?.time?.split(' ')[0] || ''
       };
 
-      console.log('Structured flight data:', JSON.stringify(flightData, null, 2));
-
       const response = await fetch('http://localhost:3001/api/saved-flights', {
         method: 'POST',
         headers: {
@@ -182,11 +348,10 @@ const FlightSearch: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save flight');
+        throw new APIError(errorData.message || 'Failed to save flight', response.status);
       }
 
       const responseData = await response.json();
-      console.log('Save flight response:', JSON.stringify(responseData, null, 2));
       setSaveStatus(prev => ({
         ...prev,
         [`flight-${index}`]: { success: true, message: 'Saved!' }
@@ -195,23 +360,30 @@ const FlightSearch: React.FC = () => {
       console.error('Error saving flight:', error);
       setSaveStatus(prev => ({
         ...prev,
-        [`flight-${index}`]: { success: false, message: error instanceof Error ? error.message : 'Failed to save flight' }
+        [`flight-${index}`]: { 
+          success: false, 
+          message: error instanceof FlightError ? error.message : 'Failed to save flight' 
+        }
       }));
     }
   };
 
-  const formatDuration = (minutes: number) => {
+  const clearResults = () => {
+    try {
+      setFlights([]);
+      setSaveStatus({});
+      localStorage.removeItem('flightSearchResults');
+      localStorage.removeItem('flightSaveStatus');
+    } catch (error) {
+      console.error('Error clearing results:', error);
+      setError('Failed to clear results. Please try again.');
+    }
+  };
+
+  const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
-  };
-
-  // Add a function to clear saved results
-  const clearResults = () => {
-    setFlights([]);
-    setSaveStatus({});
-    localStorage.removeItem('flightSearchResults');
-    localStorage.removeItem('flightSaveStatus');
   };
 
   return (
