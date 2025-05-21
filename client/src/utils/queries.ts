@@ -58,3 +58,15 @@ export const QUERY_ME = gql`
     }
   }
 `;
+
+export const QUERY_FORECAST = gql`
+  query getForecast($city: String!) {
+    getForecast(city: $city) {
+      city
+      temperature
+      description
+      humidity
+      windSpeed
+    }
+  }
+`;
