@@ -104,6 +104,8 @@ interface Airport {
 }
 
 interface FlightSegment {
+  arrival_Time: string | number | Date;
+  departure_Time: string | number | Date;
   departure_airport: Airport;
   arrival_airport: Airport;
   duration: number;
@@ -478,7 +480,6 @@ const FlightSearch: React.FC = () => {
         throw new APIError(errorData.message || 'Failed to save flight', response.status);
       }
 
-      const responseData = await response.json();
       setSaveStatus(prev => ({
         ...prev,
         [`flight-${index}`]: { success: true, message: 'Saved!' }
@@ -630,13 +631,13 @@ const FlightSearch: React.FC = () => {
                     <strong>Airline:</strong> {f.airline}
                   </div>
                   <div>
-                    <strong>Flight:</strong> {f.flightNumber}
+                    <strong>Flight:</strong> {f.flight_number}
                   </div>
                   <div>
-                    <strong>Departure:</strong> {new Date(f.departureTime).toLocaleString()}
+                    <strong>Departure:</strong> {new Date(f.departure_Time).toLocaleString()}
                   </div>
                   <div>
-                    <strong>Arrival:</strong> {new Date(f.arrivalTime).toLocaleString()}
+                    <strong>Arrival:</strong> {new Date(f.arrival_Time).toLocaleString()}
                   </div>
                 </div>
               ))}
