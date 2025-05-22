@@ -595,14 +595,16 @@ const FlightSearch: React.FC = () => {
         </div>
 
         <div className="form-buttons">
-          <button type="submit" className="search-button" disabled={loading}>
-            {loading ? 'Searching...' : 'Search Flights'}
-          </button>
-          {flights.length > 0 && (
-            <button type="button" className="clear-button" onClick={clearResults}>
-              Clear Results
+          <div className="button-container" style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+            <button type="submit" className="search-button" disabled={loading}>
+              {loading ? 'Searching...' : 'Search Flights'}
             </button>
-          )}
+            {flights.length > 0 && (
+              <button type="button" className="search-button" style={{ backgroundColor: '#dc3545' }} onClick={clearResults}>
+                Clear Results
+              </button>
+            )}
+          </div>
         </div>
       </form>
 
