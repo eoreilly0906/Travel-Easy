@@ -13,7 +13,7 @@ import Footer from './components/Footer';
 
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
-  uri: process.env.NODE_ENV === 'production' 
+  uri: import.meta.env.PROD 
     ? 'https://travel-easy-21g7.onrender.com/graphql'
     : 'http://localhost:3001/graphql',
 });
