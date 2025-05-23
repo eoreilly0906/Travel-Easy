@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Auth from '../utils/auth';
 
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001'
+  : 'https://travel-easy-21g7.onrender.com';
+
 interface SavedFlight {
   _id: string;
   flightDetails: {
@@ -44,7 +48,7 @@ const SavedFlights: React.FC = () => {
 
   const fetchSavedFlights = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/saved-flights', {
+      const response = await fetch(`${API_URL}/api/saved-flights`, {
         headers: {
           'Authorization': `Bearer ${Auth.getToken()}`
         }
@@ -66,7 +70,7 @@ const SavedFlights: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/saved-flights/${id}`, {
+      const response = await fetch(`${API_URL}/api/saved-flights/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${Auth.getToken()}`

@@ -221,6 +221,10 @@ interface CitySearchResult {
   airports: AirportInfo[];
 }
 
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001'
+  : 'https://travel-easy-21g7.onrender.com';
+
 const FlightSearch: React.FC = () => {
   const [searchForm, setSearchForm] = useState<FlightSearchForm>({
     departureCity: '',
@@ -354,7 +358,7 @@ const FlightSearch: React.FC = () => {
     try {
       validateSearchForm(searchForm);
 
-      const response = await fetch('http://localhost:3001/api/flights/search', {
+      const response = await fetch(`${API_URL}/api/flights/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -466,7 +470,7 @@ const FlightSearch: React.FC = () => {
         returnDate: flight.flights[flight.flights.length - 1]?.arrival_airport?.time?.split(' ')[0] || ''
       };
 
-      const response = await fetch('http://localhost:3001/api/saved-flights', {
+      const response = await fetch(`${API_URL}/api/saved-flights`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

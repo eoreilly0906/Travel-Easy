@@ -18,9 +18,13 @@ interface Flight {
   availableSeats: number;
 }
 
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001'
+  : 'https://travel-easy-21g7.onrender.com';
+
 export const searchFlights = async (params: FlightSearchParams): Promise<Flight[]> => {
   try {
-    const response = await fetch('http://localhost:3001/api/flights/search', {
+    const response = await fetch(`${API_URL}/api/flights/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
