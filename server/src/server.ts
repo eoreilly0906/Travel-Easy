@@ -33,8 +33,8 @@ const startApolloServer = async () => {
 
   // Enable CORS for all routes
   app.use(cors({
-    origin: 'http://localhost:3000', // Allow requests from the client
-    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+    origin: ['http://localhost:3000', 'https://travel-easy.onrender.com'],
+    credentials: true
   }));
 
   app.use(express.urlencoded({ extended: false }));
@@ -49,10 +49,15 @@ const startApolloServer = async () => {
   }));
 
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+    const clientDistPath = path.join(__dirname, '../../client/dist');
+    console.log('Serving static files from:', clientDistPath);
+    
+    app.use(express.static(clientDistPath));
 
     app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      const indexPath = path.join(clientDistPath, 'index.html');
+      console.log('Serving index.html from:', indexPath);
+      res.sendFile(indexPath);
     });
   }
 
