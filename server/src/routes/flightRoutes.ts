@@ -74,18 +74,22 @@ router.post('/search', async (req, res) => {
             airplane: flight.flights?.[0]?.airplane || '',
             travel_class: flight.type || 'Economy',
             legroom: flight.flights?.[0]?.legroom || '',
-            extensions: flight.flights?.[0]?.extensions || []
+            extensions: flight.flights?.[0]?.extensions || [],
+            arrival_Time: flight.flights?.[0]?.arrival_airport?.time || departureEnd.toISOString(),
+            departure_Time: flight.flights?.[0]?.departure_airport?.time || departureStart.toISOString(),
+            airline_logo: flight.airline_logo || ''
           }],
           total_duration: flight.total_duration || 0,
           carbon_emissions: {
             this_flight: flight.carbon_emissions?.this_flight || 0,
-            typical_for_route: flight.carbon_emissions?.typical_for_route || 0,
-            difference_percentage: flight.carbon_emissions?.difference_percentage || 0
+            typical_for_this_route: flight.carbon_emissions?.typical_for_route || 0,
+            difference_percent: flight.carbon_emissions?.difference_percentage || 0
           },
           price: flight.price || 0,
           type: flight.type || 'Economy',
           airline_logo: flight.airline_logo || '',
-          departure_token: flight.departure_token || ''
+          departure_token: flight.departure_token || '',
+          extensions: flight.flights?.[0]?.extensions || []
         };
 
         // Log the transformed flight
@@ -117,18 +121,22 @@ router.post('/search', async (req, res) => {
           airplane: 'Boeing 737',
           travel_class: 'Economy',
           legroom: 'Standard',
-          extensions: []
+          extensions: [],
+          arrival_Time: new Date(departureStart.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+          departure_Time: departureStart.toISOString(),
+          airline_logo: 'https://example.com/airline-logo.png'
         }],
         total_duration: 120,
         carbon_emissions: {
           this_flight: 100,
-          typical_for_route: 120,
-          difference_percentage: -16.67
+          typical_for_this_route: 120,
+          difference_percent: -16.67
         },
         price: 299.99,
         type: 'Economy',
         airline_logo: 'https://example.com/airline-logo.png',
-        departure_token: 'sample-token'
+        departure_token: 'sample-token',
+        extensions: []
       }];
 
       console.log('Returning sample flights:', JSON.stringify(sampleFlights, null, 2));
