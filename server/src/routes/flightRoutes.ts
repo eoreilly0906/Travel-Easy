@@ -57,18 +57,35 @@ router.post('/search', async (req, res) => {
         console.log('Processing flight:', JSON.stringify(flight, null, 2));
 
         const transformedFlight = {
-          airline: flight.flights?.[0]?.airline || 'Unknown Airline',
-          flightNumber: flight.flights?.[0]?.flight_number || 'N/A',
-          departureCity: flight.flights?.[0]?.departure_airport?.name || departureCity,
-          arrivalCity: flight.flights?.[0]?.arrival_airport?.name || arrivalCity,
-          departureTime: flight.flights?.[0]?.departure_airport?.time || departureStart.toISOString(),
-          arrivalTime: flight.flights?.[0]?.arrival_airport?.time || departureEnd.toISOString(),
+          flights: [{
+            airline: flight.flights?.[0]?.airline || 'Unknown Airline',
+            flight_number: flight.flights?.[0]?.flight_number || 'N/A',
+            departure_airport: {
+              name: flight.flights?.[0]?.departure_airport?.name || departureCity,
+              id: flight.flights?.[0]?.departure_airport?.id || departureCity,
+              time: flight.flights?.[0]?.departure_airport?.time || departureStart.toISOString()
+            },
+            arrival_airport: {
+              name: flight.flights?.[0]?.arrival_airport?.name || arrivalCity,
+              id: flight.flights?.[0]?.arrival_airport?.id || arrivalCity,
+              time: flight.flights?.[0]?.arrival_airport?.time || departureEnd.toISOString()
+            },
+            duration: flight.total_duration || 0,
+            airplane: flight.flights?.[0]?.airplane || '',
+            travel_class: flight.type || 'Economy',
+            legroom: flight.flights?.[0]?.legroom || '',
+            extensions: flight.flights?.[0]?.extensions || []
+          }],
+          total_duration: flight.total_duration || 0,
+          carbon_emissions: {
+            this_flight: flight.carbon_emissions?.this_flight || 0,
+            typical_for_route: flight.carbon_emissions?.typical_for_route || 0,
+            difference_percentage: flight.carbon_emissions?.difference_percentage || 0
+          },
           price: flight.price || 0,
-          duration: flight.total_duration || 0,
-          carbonEmissions: flight.carbon_emissions?.this_flight || 0,
           type: flight.type || 'Economy',
-          airlineLogo: flight.airline_logo || '',
-          departureToken: flight.departure_token || ''
+          airline_logo: flight.airline_logo || '',
+          departure_token: flight.departure_token || ''
         };
 
         // Log the transformed flight
@@ -77,34 +94,52 @@ router.post('/search', async (req, res) => {
       }) || [];
 
       console.log('Final transformed flights:', JSON.stringify(transformedFlights, null, 2));
-      return res.json(transformedFlights);
+      return res.json({ best_flights: transformedFlights, status: 'success' });
     } else {
       console.log('Using local database (no API key or base URL configured)');
       
       // Create sample flight data
       const sampleFlights = [{
-        airline: 'Sample Airlines',
-        flightNumber: 'SA123',
-        departureCity: departureCity,
-        arrivalCity: arrivalCity,
-        departureTime: departureStart.toISOString(),
-        arrivalTime: new Date(departureStart.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+        flights: [{
+          airline: 'Sample Airlines',
+          flight_number: 'SA123',
+          departure_airport: {
+            name: 'Sample Departure',
+            id: departureCity,
+            time: departureStart.toISOString()
+          },
+          arrival_airport: {
+            name: 'Sample Arrival',
+            id: arrivalCity,
+            time: new Date(departureStart.getTime() + 2 * 60 * 60 * 1000).toISOString()
+          },
+          duration: 120,
+          airplane: 'Boeing 737',
+          travel_class: 'Economy',
+          legroom: 'Standard',
+          extensions: []
+        }],
+        total_duration: 120,
+        carbon_emissions: {
+          this_flight: 100,
+          typical_for_route: 120,
+          difference_percentage: -16.67
+        },
         price: 299.99,
-        duration: 120,
-        carbonEmissions: 100,
         type: 'Economy',
-        airlineLogo: 'https://example.com/airline-logo.png',
-        departureToken: 'sample-token'
+        airline_logo: 'https://example.com/airline-logo.png',
+        departure_token: 'sample-token'
       }];
 
       console.log('Returning sample flights:', JSON.stringify(sampleFlights, null, 2));
-      return res.json(sampleFlights);
+      return res.json({ best_flights: sampleFlights, status: 'success' });
     }
   } catch (error) {
     console.error('Error searching flights:', error);
     return res.status(500).json({ 
       message: 'Error searching flights',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error',
+      status: 'error'
     });
   }
 });
