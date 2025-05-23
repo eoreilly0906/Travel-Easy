@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readdirSync, existsSync } from 'node:fs';
 import type { Request, Response } from 'express';
 import cors from 'cors';
 import db from './config/connection.js';
@@ -56,14 +57,14 @@ const startApolloServer = async () => {
   const clientDistPath = path.join(__dirname, '../../client/dist');
   console.log('Current directory:', __dirname);
   console.log('Serving static files from:', clientDistPath);
-  console.log('Directory contents:', require('fs').readdirSync(clientDistPath));
+  console.log('Directory contents:', readdirSync(clientDistPath));
   
   app.use(express.static(clientDistPath));
 
   app.get('*', (_req: Request, res: Response) => {
     const indexPath = path.join(clientDistPath, 'index.html');
     console.log('Serving index.html from:', indexPath);
-    console.log('File exists:', require('fs').existsSync(indexPath));
+    console.log('File exists:', existsSync(indexPath));
     res.sendFile(indexPath);
   });
 
