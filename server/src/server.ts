@@ -33,7 +33,7 @@ const startApolloServer = async () => {
 
   // Enable CORS for all routes
   app.use(cors({
-    origin: ['http://localhost:3000', 'https://travel-easy.onrender.com'],
+    origin: ['http://localhost:3000', 'https://travel-easy-21g7.onrender.com'],
     credentials: true
   }));
 
@@ -48,18 +48,20 @@ const startApolloServer = async () => {
     context: authContext
   }));
 
-  if (process.env.NODE_ENV === 'production') {
-    const clientDistPath = path.join(__dirname, '../../client/dist');
-    console.log('Serving static files from:', clientDistPath);
-    
-    app.use(express.static(clientDistPath));
+  // Always serve static files in production
+  const clientDistPath = path.join(__dirname, '../../client/dist');
+  console.log('Current directory:', __dirname);
+  console.log('Serving static files from:', clientDistPath);
+  console.log('Directory contents:', require('fs').readdirSync(clientDistPath));
+  
+  app.use(express.static(clientDistPath));
 
-    app.get('*', (_req: Request, res: Response) => {
-      const indexPath = path.join(clientDistPath, 'index.html');
-      console.log('Serving index.html from:', indexPath);
-      res.sendFile(indexPath);
-    });
-  }
+  app.get('*', (_req: Request, res: Response) => {
+    const indexPath = path.join(clientDistPath, 'index.html');
+    console.log('Serving index.html from:', indexPath);
+    console.log('File exists:', require('fs').existsSync(indexPath));
+    res.sendFile(indexPath);
+  });
 
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
