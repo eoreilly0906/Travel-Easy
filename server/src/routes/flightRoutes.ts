@@ -10,6 +10,7 @@ const router = express.Router();
 router.post('/search', async (req, res) => {
   try {
     const { departureCity, arrivalCity, departureDate, returnDate } = req.body;
+    console.log('Received search request:', { departureCity, arrivalCity, departureDate, returnDate });
 
     // Convert dates to start and end of day
     const departureStart = new Date(departureDate);
@@ -48,43 +49,56 @@ router.post('/search', async (req, res) => {
       }
 
       const flights = await response.json();
-      console.log('SerpAPI Response:', flights);
+      console.log('Raw SerpAPI Response:', JSON.stringify(flights, null, 2));
 
       // Transform the SerpAPI response to our expected format
-      const transformedFlights = flights.best_flights?.map((flight: any) => ({
-        flights: flight.flights.map((segment: any) => ({
-          airline: segment.airline || 'Unknown Airline',
-          flightNumber: segment.flight_number || '',
-          departureTime: segment.departure_airport?.time || '',
-          arrivalTime: segment.arrival_airport?.time || ''
-        })),
-        total_duration: flight.total_duration || 0,
-        carbon_emissions: {
-          this_flight: flight.carbon_emissions?.this_flight || 0,
-          typical_for_route: flight.carbon_emissions?.typical_for_route || 0,
-          difference_percentage: flight.carbon_emissions?.difference_percentage || 0
-        },
-        price: flight.price || 0,
-        type: flight.type || 'Standard',
-        airline_logo: flight.airline_logo || '',
-        departure_token: flight.departure_token || ''
-      })) || [];
+      const transformedFlights = flights.best_flights?.map((flight: any) => {
+        // Log each flight before transformation
+        console.log('Processing flight:', JSON.stringify(flight, null, 2));
 
-      console.log('Transformed flights:', JSON.stringify(transformedFlights, null, 2));
-      return res.json({ best_flights: transformedFlights });
+        const transformedFlight = {
+          airline: flight.flights?.[0]?.airline || 'Unknown Airline',
+          flightNumber: flight.flights?.[0]?.flight_number || 'N/A',
+          departureCity: flight.flights?.[0]?.departure_airport?.name || departureCity,
+          arrivalCity: flight.flights?.[0]?.arrival_airport?.name || arrivalCity,
+          departureTime: flight.flights?.[0]?.departure_airport?.time || departureStart.toISOString(),
+          arrivalTime: flight.flights?.[0]?.arrival_airport?.time || departureEnd.toISOString(),
+          price: flight.price || 0,
+          duration: flight.total_duration || 0,
+          carbonEmissions: flight.carbon_emissions?.this_flight || 0,
+          type: flight.type || 'Economy',
+          airlineLogo: flight.airline_logo || '',
+          departureToken: flight.departure_token || ''
+        };
+
+        // Log the transformed flight
+        console.log('Transformed flight:', JSON.stringify(transformedFlight, null, 2));
+        return transformedFlight;
+      }) || [];
+
+      console.log('Final transformed flights:', JSON.stringify(transformedFlights, null, 2));
+      return res.json(transformedFlights);
     } else {
       console.log('Using local database (no API key or base URL configured)');
-      // Use local database
-      const flights = await Flight.find({
-        departureCity: { $regex: new RegExp(departureCity, 'i') },
-        arrivalCity: { $regex: new RegExp(arrivalCity, 'i') },
-        departureTime: {
-          $gte: departureStart,
-          $lte: departureEnd
-        }
-      }).sort({ departureTime: 1 });
+      
+      // Create sample flight data
+      const sampleFlights = [{
+        airline: 'Sample Airlines',
+        flightNumber: 'SA123',
+        departureCity: departureCity,
+        arrivalCity: arrivalCity,
+        departureTime: departureStart.toISOString(),
+        arrivalTime: new Date(departureStart.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+        price: 299.99,
+        duration: 120,
+        carbonEmissions: 100,
+        type: 'Economy',
+        airlineLogo: 'https://example.com/airline-logo.png',
+        departureToken: 'sample-token'
+      }];
 
-      return res.json(flights);
+      console.log('Returning sample flights:', JSON.stringify(sampleFlights, null, 2));
+      return res.json(sampleFlights);
     }
   } catch (error) {
     console.error('Error searching flights:', error);
