@@ -127,7 +127,7 @@ npm run start:dev
 ## Deployment
 
 The application is deployed on Render. Visit the live application at:
-[Travel Easy](https://your-render-deployment-url)
+[Travel Easy] https://travel-easy-21g7.onrender.com
 
 ## License
 
