@@ -10,6 +10,8 @@ import SingleThought from './pages/SingleThought';
 import Profile from './pages/Profile';
 import ErrorPage from './pages/Error';
 import Parks from './pages/Parks';
+import FlightSearch from './pages/FlightSearch';
+
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
       }, {
         path: '/parks',
         element: <Parks />
+
+        path: '/flights',
+        element: <FlightSearch />
+
       }
     ]
   },

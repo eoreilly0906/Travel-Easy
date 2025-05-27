@@ -1,11 +1,13 @@
 import express from 'express';
 import path from 'node:path';
 import type { Request, Response } from 'express';
-import db from './config/connection.js'
-import { ApolloServer } from '@apollo/server';// Note: Import from @apollo/server-express
+import cors from 'cors';
+import db from './config/connection.js';
+import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
 import { authenticateToken } from './utils/auth.js';
+import flightRoutes from './routes/flightRoutes.js';
 
 const server = new ApolloServer({
   typeDefs,
@@ -19,8 +21,17 @@ const startApolloServer = async () => {
   const PORT = process.env.PORT || 3001;
   const app = express();
 
+  // Enable CORS for all routes
+  app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from the client
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+  }));
+
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
+
+  // REST API routes
+  app.use('/api/flights', flightRoutes);
 
   app.use('/graphql', expressMiddleware(server as any,
     {
