@@ -69,7 +69,12 @@ const resolvers = {
     },
     parksByState: async (_parent: any, { stateCode }: { stateCode: string }) => {
       const url = `https://developer.nps.gov/api/v1/parks?stateCode=${stateCode}&api_key=${NPS_API_KEY}`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Travel-Easy/1.0 (contact@example.com)',
+          'Accept': 'application/json'
+        }
+      });
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const text = await response.text();
