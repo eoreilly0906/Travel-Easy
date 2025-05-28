@@ -1,29 +1,52 @@
 import { useState } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import { QUERY_THOUGHTS, QUERY_FORECAST } from '../utils/queries';
-import ThoughtList from '../components/ThoughtList/index.tsx';
-import ThoughtForm from '../components/ThoughtForm/index.tsx';
+import ThoughtList from '../components/ThoughtList';
+import ThoughtForm from '../components/ThoughtForm';
+import WeatherForecast from '../components/WeatherForecast';
+import { fetchCityForecast } from '../utils/weatherRest'; // Updated import
+import 'weather-icons/css/weather-icons.css';
 
 const Home = () => {
-  const { loading, data } = useQuery(QUERY_THOUGHTS);
-  const thoughts = data?.thoughts || [];
-
   const [city, setCity] = useState('');
-  const [getForecast, { data: forecastData, loading: loadingForecast, error: forecastError }] = useLazyQuery(QUERY_FORECAST);
+  const [forecast, setForecast] = useState<any>(null);
+  const [loadingForecast, setLoadingForecast] = useState(false);
+  const [errorForecast, setErrorForecast] = useState('');
 
-  const handleForecastSearch = () => {
-    if (city.trim()) {
-      getForecast({ variables: { city } });
+  const handleForecastSearch = async () => {
+    if (!city.trim()) return;
+
+    try {
+      setLoadingForecast(true);
+      setErrorForecast('');
+      const forecastData = await fetchCityForecast(city); // Use new function
+      setForecast(forecastData);
+    } catch (err) {
+      console.error(err);
+      setErrorForecast('Failed to load weather');
+    } finally {
+      setLoadingForecast(false);
     }
   };
 
   return (
     <main>
       <div className="flex-row justify-center">
-
         {/* Weather Forecast Section */}
-        <div className="col-12 col-md-6 mb-3 p-3" style={{ border: '1px solid #ccc' }}>
-          <h2>Weather Forecast</h2>
+        <div className="col-12 col-md-10 mb-3 p-3 border rounded bg-white shadow-sm">
+          <h2 className="mb-2">5-Day Weather Forecast</h2>
+          <h5 className="mb-4">
+            <img
+              src="/assets/raincoat.png"
+              alt="Raincoat"
+              style={{ width: 24, height: 24, verticalAlign: 'middle', marginRight: 6 }}
+            />
+            Raincoat or sunglasses?
+            <img
+              src="/assets/sunglasses.png"
+              alt="Sunglasses"
+              style={{ width: 24, height: 24, verticalAlign: 'middle', margin: '0 6px' }}
+            />
+            Let our 5-day forecast help you decide!
+          </h5>
           <input
             type="text"
             placeholder="Enter city name"
@@ -31,38 +54,23 @@ const Home = () => {
             onChange={(e) => setCity(e.target.value)}
             className="form-input mb-2"
           />
-          <button onClick={handleForecastSearch} className="btn btn-primary mb-2">
+          <button onClick={handleForecastSearch} className="btn btn-primary mb-4">
             Get Forecast
           </button>
 
           {loadingForecast && <p>Loading forecast...</p>}
-          {forecastError && <p>Error fetching forecast.</p>}
-          {forecastData?.getForecast && (
-            <div className="border p-2">
-              <p><strong>City:</strong> {forecastData.getForecast.city}</p>
-              <p><strong>Temperature:</strong> {forecastData.getForecast.temperature} °C</p>
-              <p><strong>Description:</strong> {forecastData.getForecast.description}</p>
-              <p><strong>Humidity:</strong> {forecastData.getForecast.humidity}%</p>
-              <p><strong>Wind Speed:</strong> {forecastData.getForecast.windSpeed} m/s</p>
-            </div>
-          )}
+          {errorForecast && <p className="text-red-600">{errorForecast}</p>}
+          {forecast && <WeatherForecast forecast={forecast} />}
         </div>
 
         {/* Thought Form */}
-        <div className="col-12 col-md-10 mb-3 p-3" style={{ border: '1px dotted #1a1a1a' }}>
+        <div className="col-12 col-md-10 mb-3 p-3 border-dotted border">
           <ThoughtForm />
         </div>
 
         {/* Thought List */}
         <div className="col-12 col-md-8 mb-3">
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <ThoughtList
-              thoughts={thoughts}
-              title="Some Feed for Thought(s)..."
-            />
-          )}
+          <ThoughtList title="Some Feed for Thought(s)..." thoughts={[]} />
         </div>
       </div>
     </main>

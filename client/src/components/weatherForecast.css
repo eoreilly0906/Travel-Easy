@@ -1,0 +1,81 @@
+.weather-icon {
+  font-size: 48px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  margin: 8px 0;
+  color: #333;
+}
+
+.weather-icon:hover {
+  transform: scale(1.2) rotate(5deg);
+  color: goldenrod;
+}
+
+.weather-icon.animated {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Bouncing icon animation */
+.weather-icon.bounce {
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Weather card with animated gradient background */
+.weather-card {
+  background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 16px;
+  margin: 4px;
+  display: inline-block;
+  width: 160px;
+  text-align: center;
+  animation: bg-move 6s ease-in-out infinite alternate;
+  background-size: 200% 200%;
+}
+
+@keyframes bg-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Optional: extra styling for date, description, and temp */
+.weather-date {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.weather-desc {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.temp {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #0077b6;
+  margin: 4px 0;
+}
+
+/* Responsive layout for forecast cards */
+.weather-forecast-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+

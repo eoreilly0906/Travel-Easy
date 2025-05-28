@@ -29,6 +29,11 @@ const startApolloServer = async () => {
         app.get('*', (_req, res) => {
             res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
         });
+        app.get('/api/weather', async (req, res) => {
+            const city = req.query.city;
+            // Example: respond with the city for now to use the variable
+            res.json({ city });
+        });
     }
     app.listen(PORT, () => {
         console.log(`API server running on port ${PORT}!`);
