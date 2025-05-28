@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY; // use .env for safety
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY; 
 
 console.log("Loaded OpenWeather API Key:", API_KEY);
 
