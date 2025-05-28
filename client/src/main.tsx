@@ -14,6 +14,7 @@ import ThingsToDo from './pages/ThingsToDo.tsx';
 import Parks from './pages/Parks';
 import FlightSearch from './pages/FlightSearch';
 import SavedFlights from './pages/SavedFlights';
+import Testimonial from './pages/Testimonial.tsx';
 
 
 const router = createBrowserRouter([
@@ -54,10 +55,11 @@ const router = createBrowserRouter([
       }, {
         path: '/saved-flights',
         element: <SavedFlights />
-
-
-
+      },{
+        path:'/testimonial',
+        element: <Testimonial />
       }
+
     ]
   },
 ]);
