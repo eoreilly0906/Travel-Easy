@@ -100,34 +100,74 @@ const resolvers = {
       const user = await User.create({ ...input });
     
       // Sign a token with the user's information
-      const token = signToken(user.username, user.email, user._id);
+      const token = signToken({
+        _id: user._id as string,
+        username: user.username as string
+      });
     
       // Return the token and the user
       return { token, user };
     },
     
     login: async (_parent: any, { email, password }: LoginUserArgs) => {
-      // Find a user with the provided email
-      const user = await User.findOne({ email });
-    
-      // If no user is found, throw an AuthenticationError
-      if (!user) {
-        throw new AuthenticationError('Could not authenticate user.');
+      try {
+        console.log('Login attempt received:', { email });
+        
+        // Find a user with the provided email
+        const user = await User.findOne({ email });
+        console.log('User lookup result:', user ? {
+          found: true,
+          username: user.username,
+          hasPassword: !!user.password
+        } : 'User not found');
+      
+        // If no user is found, throw an AuthenticationError
+        if (!user) {
+          console.error('Login failed: User not found for email:', email);
+          throw new AuthenticationError('No user found with this email address.');
+        }
+      
+        // Check if the provided password is correct
+        console.log('Verifying password...');
+        const correctPw = await user.isCorrectPassword(password);
+        console.log('Password verification result:', correctPw ? 'Password correct' : 'Password incorrect');
+      
+        // If the password is incorrect, throw an AuthenticationError
+        if (!correctPw) {
+          console.error('Login failed: Incorrect password for email:', email);
+          throw new AuthenticationError('Incorrect password.');
+        }
+      
+        console.log('Login successful for user:', user.username);
+        
+        // Sign a token with the user's information
+        const token = signToken({
+          _id: user._id as string,
+          username: user.username as string
+        });
+      
+        console.log('Token generated successfully');
+        
+        // Return the token and the user
+        return { token, user };
+      } catch (error) {
+        console.error('Login error:', {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined,
+          name: error instanceof Error ? error.name : 'Unknown error type'
+        });
+        
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
+        
+        // If it's a MongoDB error, provide a more specific message
+        if (error instanceof Error && error.name === 'MongoError') {
+          throw new Error('Database error occurred during login.');
+        }
+        
+        throw new Error('An unexpected error occurred during login.');
       }
-    
-      // Check if the provided password is correct
-      const correctPw = await user.isCorrectPassword(password);
-    
-      // If the password is incorrect, throw an AuthenticationError
-      if (!correctPw) {
-        throw new AuthenticationError('Could not authenticate user.');
-      }
-    
-      // Sign a token with the user's information
-      const token = signToken(user.username, user.email, user._id);
-    
-      // Return the token and the user
-      return { token, user };
     },
     addThought: async (_parent: any, { input }: AddThoughtArgs, context: any) => {
       if (context.user) {
