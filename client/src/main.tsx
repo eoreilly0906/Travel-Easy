@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 
-
 import App from './App.jsx';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
@@ -14,7 +13,7 @@ import ThingsToDo from './pages/ThingsToDo.tsx';
 import Parks from './pages/Parks';
 import FlightSearch from './pages/FlightSearch';
 import SavedFlights from './pages/SavedFlights';
-
+import Landing from './pages/Landing';
 
 const router = createBrowserRouter([
   {
@@ -24,39 +23,47 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Landing />  
+      },
+      {
+        path: 'home',
         element: <Home />
-      }, {
-        path: '/login',
+      },
+      {
+        path: 'login',
         element: <Login />
-      }, {
-        path: '/signup',
+      },
+      {
+        path: 'signup',
         element: <Signup />
-      }, {
-        }, {
+      },
+      {
         path: '/thingstodo',
         element: <ThingsToDo />
-      }, {
-        path: '/profiles/:username',
+      },
+      {
+        path: 'profiles/:username',
         element: <Profile />
-      }, {
-        path: '/me',
+      },
+      {
+        path: 'me',
         element: <Profile />
-      }, {
-        path: '/thoughts/:thoughtId',
+      },
+      {
+        path: 'thoughts/:thoughtId',
         element: <SingleThought />
-      }, {
+      },
+      {
         path: '/parks',
         element: <Parks />
-      }, {
+      },
+      {
         path: '/flights',
         element: <FlightSearch />
-
-      }, {
+      },
+      {
         path: '/saved-flights',
         element: <SavedFlights />
-
-
-
       }
     ]
   },
@@ -66,7 +73,6 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
 }
-
 
 // Example Button linking to the Things to Do page
 <Link to="/things-to-do">
