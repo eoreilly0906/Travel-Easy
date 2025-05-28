@@ -58,3 +58,19 @@ export const QUERY_ME = gql`
     }
   }
 `;
+
+export const QUERY_PARKS_BY_STATE = gql`
+  query parksByState($stateCode: String!) {
+    parksByState(stateCode: $stateCode) {
+      id
+      fullName
+      description
+      url
+      states
+      images {
+        url
+        altText
+      }
+    }
+  }
+`;

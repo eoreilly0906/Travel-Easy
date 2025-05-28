@@ -1,5 +1,6 @@
 import { Thought, User } from '../models/index.js';
 import { signToken, AuthenticationError } from '../utils/auth.js'; 
+import fetch from 'node-fetch';
 
 // Define types for the arguments
 interface AddUserArgs {
@@ -40,6 +41,8 @@ interface RemoveCommentArgs {
   commentId: string;
 }
 
+const NPS_API_KEY = process.env.NPS_API_KEY;
+
 const resolvers = {
   Query: {
     users: async () => {
@@ -63,6 +66,32 @@ const resolvers = {
       }
       // If the user is not authenticated, throw an AuthenticationError
       throw new AuthenticationError('Could not authenticate user.');
+    },
+    parksByState: async (_parent: any, { stateCode }: { stateCode: string }) => {
+      const url = `https://developer.nps.gov/api/v1/parks?stateCode=${stateCode}&api_key=${NPS_API_KEY}`;
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Travel-Easy/1.0 (contact@example.com)',
+          'Accept': 'application/json'
+        }
+      });
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(`NPS API error: ${text.substring(0, 200)}`);
+      }
+      const data = await response.json();
+      return data.data.map((park: any) => ({
+        id: park.id,
+        fullName: park.fullName,
+        description: park.description,
+        url: park.url,
+        states: park.states,
+        images: park.images?.map((img: any) => ({
+          url: img.url,
+          altText: img.altText,
+        })) || [],
+      }));
     },
   },
   Mutation: {
