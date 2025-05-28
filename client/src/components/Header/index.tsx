@@ -18,6 +18,9 @@ const Header = () => {
           <p className="m-0">Get into the mind of a programmer.</p>
         </div>
         <div>
+          <Link className="btn btn-lg btn-info m-2" to="/parks">
+            Parks
+          </Link>
           {/* Checking if the user is logged in to conditionally render profile link and logout button */}
           {Auth.loggedIn() ? (
             <>

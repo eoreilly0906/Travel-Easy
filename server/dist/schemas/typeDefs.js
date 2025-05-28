@@ -37,12 +37,27 @@ const typeDefs = `
     user: User
   }
 
+  type Park {
+    id: ID!
+    fullName: String
+    description: String
+    url: String
+    states: String
+    images: [ParkImage]
+  }
+
+  type ParkImage {
+    url: String
+    altText: String
+  }
+
   type Query {
     users: [User]
     user(username: String!): User
     thoughts: [Thought]!
     thought(thoughtId: ID!): Thought
     me: User
+    parksByState(stateCode: String!): [Park]
   }
 
   type Mutation {
