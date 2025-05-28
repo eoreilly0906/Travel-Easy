@@ -10,10 +10,14 @@ import Login from './pages/Login';
 import SingleThought from './pages/SingleThought';
 import Profile from './pages/Profile';
 import ErrorPage from './pages/Error';
+
+import Landing from './pages/Landing';
+
 import ThingsToDo from './pages/ThingsToDo.tsx';
 import Parks from './pages/Parks';
 import FlightSearch from './pages/FlightSearch';
 import SavedFlights from './pages/SavedFlights';
+
 
 
 const router = createBrowserRouter([
@@ -24,25 +28,39 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Landing />  
+      },
+      {
+        path: 'home',
         element: <Home />
-      }, {
-        path: '/login',
+      },
+      {
+        path: 'login',
         element: <Login />
-      }, {
-        path: '/signup',
+      },
+      {
+        path: 'signup',
         element: <Signup />
+
+      },
+      {
+        path: 'profiles/:username',
+
       }, {
         }, {
         path: '/thingstodo',
         element: <ThingsToDo />
       }, {
         path: '/profiles/:username',
+
         element: <Profile />
-      }, {
-        path: '/me',
+      },
+      {
+        path: 'me',
         element: <Profile />
-      }, {
-        path: '/thoughts/:thoughtId',
+      },
+      {
+        path: 'thoughts/:thoughtId',
         element: <SingleThought />
       }, {
         path: '/parks',
