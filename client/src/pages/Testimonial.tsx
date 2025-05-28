@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import './Testimonial.css'; 
+
+
 
 type Testimonial = {
   name: string;
@@ -22,12 +25,12 @@ const Testimonial: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl mt-10">
-      <h1 className="text-2xl font-bold mb-4 text-center">What Our Travelers Say</h1>
+    <div className="testimonial-container">
+      <h1 className="testimonial-title" >What Our Travelers Say</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="testimonial-form">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium">Your Name</label>
+          <label htmlFor="name" className="block text-sm font-medium" >Your Name</label>
           <input
             id="name"
             type="text"
@@ -58,11 +61,11 @@ const Testimonial: React.FC = () => {
         </button>
       </form>
 
-      <div className="mt-8 space-y-4">
+      <div className="testimonial-list">
         {testimonials.map((t, index) => (
           <div key={index} className="border-t pt-4">
-            <p className="text-gray-700 italic">"{t.message}"</p>
-            <p className="text-sm font-semibold text-gray-500 mt-1">– {t.name}</p>
+            <p className="testimonial-message">"{t.message}"</p>
+            <p className="testimonial-name">– {t.name}</p>
           </div>
         ))}
       </div>
