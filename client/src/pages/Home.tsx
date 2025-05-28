@@ -4,6 +4,7 @@ import ThoughtList from '../components/ThoughtList/index.tsx';
 import ThoughtForm from '../components/ThoughtForm/index.tsx';
 
 import { QUERY_THOUGHTS } from '../utils/queries.ts';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const { loading, data } = useQuery(QUERY_THOUGHTS);
@@ -16,7 +17,11 @@ const Home = () => {
           className="col-12 col-md-10 mb-3 p-3"
           style={{ border: '1px dotted #1a1a1a' }}
         >
-          <ThoughtForm />
+          <Link to="/thingstodo" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
+            Things to Do
+          </Link>
+
+<ThoughtForm />
         </div>
         <div className="col-12 col-md-8 mb-3">
           {loading ? (
