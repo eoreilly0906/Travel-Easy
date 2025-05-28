@@ -44,6 +44,17 @@
   background-color: #1d4ed8;
 }
 
+.your-name {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+.your-comment {
+   font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
 .testimonial-list {
   margin-top: 2rem;
 }

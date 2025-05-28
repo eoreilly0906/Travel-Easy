@@ -30,7 +30,7 @@ const Testimonial: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="testimonial-form">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium" >Your Name</label>
+          <label htmlFor="name" className="your-name" >Your Name</label>
           <input
             id="name"
             type="text"
@@ -42,7 +42,7 @@ const Testimonial: React.FC = () => {
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm font-medium">Your Comment</label>
+          <label htmlFor="message" className="your-comment">Your Comment</label>
           <textarea
             id="message"
             rows={4}
