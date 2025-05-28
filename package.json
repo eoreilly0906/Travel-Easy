@@ -22,5 +22,11 @@
   "dependencies": {
     "concurrently": "^8.2.2",
     "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.0",
+    "react-router-dom": "^7.6.0"
   }
 }
