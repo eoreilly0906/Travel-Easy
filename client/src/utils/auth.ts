@@ -2,12 +2,11 @@ import { type JwtPayload, jwtDecode } from 'jwt-decode';
 
 // Extending the JwtPayload interface to include additional data fields specific to the application.
 interface ExtendedJwt extends JwtPayload {
-  data:{
-    username:string,
-    email:string,
-    id:string
+  data: {
+    _id: string;
+    username: string;
   }
-};
+}
 
 class AuthService {
   // This method decodes the JWT token to get the user's profile information.
@@ -31,12 +30,15 @@ class AuthService {
 
       // Returns true if the token has expired, false otherwise.
       if (decoded?.exp && decoded?.exp < Date.now() / 1000) {
+        this.logout(); // Clear the token if it's expired
         return true;
       }
     } catch (err) {
-      // If decoding fails, assume the token is not expired.
-      return false;
+      // If decoding fails, clear the token and return true
+      this.logout();
+      return true;
     }
+    return false;
   }
 
   // This method retrieves the token from localStorage.
