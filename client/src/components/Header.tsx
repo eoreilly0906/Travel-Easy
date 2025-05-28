@@ -25,17 +25,17 @@ const Header: React.FC = () => {
           <Nav className="me-auto">
             <Nav.Link 
               as={Link} 
-              to="/" 
-              className={isActive('/') ? 'active' : ''}
-            >
-              <i className="fas fa-home"></i> Home
-            </Nav.Link>
-            <Nav.Link 
-              as={Link} 
               to="/flights" 
               className={isActive('/flights') ? 'active' : ''}
             >
               <i className="fas fa-search"></i> Search Flights
+            </Nav.Link>
+            <Nav.Link 
+              as={Link} 
+              to="/parks" 
+              className={isActive('/parks') ? 'active' : ''}
+            >
+              <i className="fas fa-tree"></i> Parks
             </Nav.Link>
             {Auth.loggedIn() ? (
               <>
