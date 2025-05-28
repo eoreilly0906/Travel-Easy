@@ -11,6 +11,10 @@ import SingleThought from './pages/SingleThought';
 import Profile from './pages/Profile';
 import ErrorPage from './pages/Error';
 import ThingsToDo from './pages/ThingsToDo.tsx';
+import Parks from './pages/Parks';
+import FlightSearch from './pages/FlightSearch';
+import SavedFlights from './pages/SavedFlights';
+
 
 const router = createBrowserRouter([
   {
@@ -40,6 +44,19 @@ const router = createBrowserRouter([
       }, {
         path: '/thoughts/:thoughtId',
         element: <SingleThought />
+      }, {
+        path: '/parks',
+        element: <Parks />
+
+        path: '/flights',
+        element: <FlightSearch />
+
+      }, {
+        path: '/saved-flights',
+        element: <SavedFlights />
+
+
+
       }
     ]
   },

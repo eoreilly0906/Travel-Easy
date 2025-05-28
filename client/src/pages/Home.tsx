@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
 import ThoughtList from '../components/ThoughtList/index.tsx';
 import ThoughtForm from '../components/ThoughtForm/index.tsx';
@@ -17,11 +18,18 @@ const Home = () => {
           className="col-12 col-md-10 mb-3 p-3"
           style={{ border: '1px dotted #1a1a1a' }}
         >
+
           <Link to="/thingstodo" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
             Things to Do
           </Link>
 
 <ThoughtForm />
+
+          <Link to="/flights" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
+            Search Flights
+          </Link>
+          <ThoughtForm />
+
         </div>
         <div className="col-12 col-md-8 mb-3">
           {loading ? (
