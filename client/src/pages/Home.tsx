@@ -5,7 +5,7 @@ import ThoughtList from '../components/ThoughtList/index.tsx';
 import ThoughtForm from '../components/ThoughtForm/index.tsx';
 
 import { QUERY_THOUGHTS } from '../utils/queries.ts';
-import { Link } from 'react-router-dom';
+
 
 const Home = () => {
   const { loading, data } = useQuery(QUERY_THOUGHTS);
