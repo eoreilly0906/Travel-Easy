@@ -48,10 +48,9 @@ const router = createBrowserRouter([
       }, {
         path: '/parks',
         element: <Parks />
-
+      }, {
         path: '/flights',
         element: <FlightSearch />
-
       }, {
         path: '/saved-flights',
         element: <SavedFlights />
