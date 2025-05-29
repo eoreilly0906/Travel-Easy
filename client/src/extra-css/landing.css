@@ -1,52 +1,91 @@
-.landing-container{
-    background-image: url("../assets/traveleasy.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 80vh;
-    width: 100%; 
+.landing-container {
+    height: 100vh;
+    width: 100%;
     padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.landing-container > div {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-align: center;
+    max-width: 800px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.landing-container h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.landing-container p {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.landing-container a {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.landing-container a:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 640px) {
     .landing-container {
-      height: 100vh;         
-      padding: 1rem;         
-      background-position: top; 
+        padding: 1rem;
     }
   
     .landing-container h1 {
-      font-size: 1.8rem;     
+        font-size: 2rem;
     }
   
     .landing-container p {
-      font-size: 1rem;    
+        font-size: 1.1rem;
     }
   
     .landing-container a {
-      padding: 0.5rem 1.25rem;
-      font-size: 0.9rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
     }
-  }
+}
 
-  /* Medium screens (tablets/laptops) */
 @media (min-width: 641px) and (max-width: 1024px) {
     .landing-container h1 {
-      font-size: 2.5rem;
+        font-size: 2.8rem;
     }
   
     .landing-container p {
-      font-size: 1.2rem;
-      max-width: 600px;
+        font-size: 1.3rem;
     }
   
     .landing-container a {
-      font-size: 1rem;
-      padding: 0.75rem 1.75rem;
+        font-size: 1.1rem;
+        padding: 0.9rem 1.8rem;
     }
-  }
-  
-  /* Large screens (desktops and above) */
-  @media (min-width: 1025px) {
+}
+
+/* Medium screens (tablets/laptops) */
+@media (min-width: 1025px) {
     .landing-container {
       height: 100vh;
       padding: 4rem;
