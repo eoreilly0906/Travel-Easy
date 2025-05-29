@@ -25,13 +25,6 @@ const Header: React.FC = () => {
           <Nav className="me-auto">
             <Nav.Link 
               as={Link} 
-              to="/flights" 
-              className={isActive('/flights') ? 'active' : ''}
-            >
-              <i className="fas fa-search"></i> Search Flights
-            </Nav.Link>
-            <Nav.Link 
-              as={Link} 
               to="/parks" 
               className={isActive('/parks') ? 'active' : ''}
             >
