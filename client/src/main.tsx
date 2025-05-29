@@ -2,24 +2,17 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 
-
 import App from './App.jsx';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import SingleThought from './pages/SingleThought';
-import Profile from './pages/Profile';
 import ErrorPage from './pages/Error';
-
 import Landing from './pages/Landing';
-
-import ThingsToDo from './pages/ThingsToDo.tsx';
+import ThingsToDo from './pages/ThingsToDo';
 import Parks from './pages/Parks';
 import FlightSearch from './pages/FlightSearch';
 import SavedFlights from './pages/SavedFlights';
 import Testimonial from './pages/Testimonial.tsx';
-
-
 
 const router = createBrowserRouter([
   {
@@ -42,39 +35,29 @@ const router = createBrowserRouter([
       {
         path: 'signup',
         element: <Signup />
-
       },
       {
-        path: 'profiles/:username',
-
-      }, {
-        }, {
         path: '/thingstodo',
         element: <ThingsToDo />
-      }, {
-        path: '/profiles/:username',
-
-        element: <Profile />
       },
       {
-        path: 'me',
-        element: <Profile />
-      },
-      {
-        path: 'thoughts/:thoughtId',
-        element: <SingleThought />
-      }, {
         path: '/parks',
         element: <Parks />
-      }, {
+      },
+      {
         path: '/flights',
         element: <FlightSearch />
-      }, {
+
+      },
+      {
         path: '/saved-flights',
         element: <SavedFlights />
+
+      
       },{
         path:'/testimonial',
         element: <Testimonial />
+
       }
 
     ]
@@ -85,7 +68,6 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
 }
-
 
 // Example Button linking to the Things to Do page
 <Link to="/things-to-do">

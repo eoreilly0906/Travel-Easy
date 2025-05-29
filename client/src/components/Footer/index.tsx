@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="w-100 mt-auto bg-secondary p-4">
+    <footer className="w-100 mt-auto p-4" style={{ background: 'linear-gradient(135deg, #2d3e50 0%, #1a1a1a 100%)' }}>
       <div className="container text-center mb-5">
         {location.pathname !== '/' && (
           <button
@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
           >
             ❤️
           </span>{' '}
-          by the Tech Thoughts team.
+          by the team that brought you HoroScoop and MunchMap!
         </h4>
       </div>
     </footer>

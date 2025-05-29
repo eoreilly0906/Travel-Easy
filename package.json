@@ -21,7 +21,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0",
+
     "@apollo/server": "^4.12.1",
+
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.0",
