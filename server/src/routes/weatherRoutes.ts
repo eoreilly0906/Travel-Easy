@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
     }
 
     const data = await response.json();
-    console.log('Raw temperature from API (Fahrenheit):', data.main.temp);
+    console.log('Raw API response:', data);
 
     if (!data.main || !data.weather || !data.weather[0]) {
       console.error('Invalid response format:', data);
