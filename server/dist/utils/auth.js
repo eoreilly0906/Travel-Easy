@@ -52,9 +52,7 @@ export const authContext = async ({ req }) => {
         return { user };
     }
     catch (error) {
-        throw new GraphQLError('Invalid token', {
-            extensions: { code: 'UNAUTHENTICATED' }
-        });
+        return { user: null };
     }
 };
 export class AuthenticationError extends GraphQLError {

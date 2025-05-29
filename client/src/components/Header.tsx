@@ -37,6 +37,13 @@ const Header: React.FC = () => {
             >
               <i className="fas fa-tree"></i> Parks
             </Nav.Link>
+            <Nav.Link 
+              as={Link} 
+              to="/testimonial" 
+              className={isActive('/testimonal') ? 'active' : ''}
+            >
+              <i className="fas fa-comment"></i> Testimonials
+            </Nav.Link>
             {Auth.loggedIn() ? (
               <>
                 <Nav.Link 
