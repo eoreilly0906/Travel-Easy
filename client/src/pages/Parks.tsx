@@ -68,7 +68,7 @@ const Parks = () => {
   return (
     <main className="flex-row justify-center mb-4">
       <div className="col-12 col-lg-10">
-        <div className="card">
+        <div className="card bg-white shadow-lg">
           <h4 className="card-header bg-dark text-light p-2">Find Parks by State</h4>
           <div className="card-body">
             <form onSubmit={handleSubmit}>
@@ -90,22 +90,22 @@ const Parks = () => {
             {data?.parksByState?.length > 0 && (
               <div className="mt-3">
                 {data.parksByState.map((park: any) => (
-                  <div key={park.id} className="card mb-3">
+                  <div key={park.id} className="card mb-3 bg-white shadow">
                     <div className="card-body">
-                      <h5>{park.fullName}</h5>
-                      <p>{park.description}</p>
+                      <h5 className="text-dark">{park.fullName}</h5>
+                      <p className="text-dark">{park.description}</p>
                       {park.images?.[0]?.url && (
-                        <img src={park.images[0].url} alt={park.images[0].altText} style={{maxWidth: '300px'}} />
+                        <img src={park.images[0].url} alt={park.images[0].altText} style={{maxWidth: '300px'}} className="rounded shadow-sm" />
                       )}
-                      <p>
-                        <a href={park.url} target="_blank" rel="noopener noreferrer">More Info</a>
+                      <p className="mt-2">
+                        <a href={park.url} target="_blank" rel="noopener noreferrer" className="text-primary">More Info</a>
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            {data && data.parksByState?.length === 0 && <p>No parks found for this state.</p>}
+            {data && data.parksByState?.length === 0 && <p className="text-dark">No parks found for this state.</p>}
           </div>
         </div>
       </div>
