@@ -39,13 +39,6 @@ const Header: React.FC = () => {
                 >
                   <i className="fas fa-heart"></i> Saved Flights
                 </Nav.Link>
-                <Nav.Link 
-                  as={Link} 
-                  to="/profile" 
-                  className={isActive('/profile') ? 'active' : ''}
-                >
-                  <i className="fas fa-user"></i> Profile
-                </Nav.Link>
                 <Nav.Link onClick={logout} className="logout-link">
                   <i className="fas fa-sign-out-alt"></i> Logout
                 </Nav.Link>
