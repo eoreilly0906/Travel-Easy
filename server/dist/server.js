@@ -11,6 +11,8 @@ import { authContext } from './utils/auth.js';
 import flightRoutes from './routes/flightRoutes.js';
 import savedFlightRoutes from './routes/savedFlightRoutes.js';
 import weatherRoutes from './routes/weatherRoutes.js';
+import testimonialRoutes from './routes/testimonial.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const server = new ApolloServer({
@@ -41,7 +43,11 @@ const startApolloServer = async () => {
     // API routes - these must come before any static file serving
     app.use('/api/flights', flightRoutes);
     app.use('/api/saved-flights', savedFlightRoutes);
+
     app.use('/api/weather', weatherRoutes);
+
+    app.use('/api/testimonials', testimonialRoutes);
+
     app.use('/graphql', expressMiddleware(server, {
         context: authContext
     }));

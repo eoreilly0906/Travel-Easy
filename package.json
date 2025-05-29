@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/dist/server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "start:dev": "concurrently \"cd server && npm run watch\" \"wait-on tcp:3001 && cd client && npm run dev\"",
     "server": "cd server && npm start",
     "server:dev": "cd server && npm run dev",
@@ -20,11 +21,24 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+
     "concurrently": "^8.2.2",
     "wait-on": "^7.2.0",
+
+    "@apollo/server": "^4.12.1",
+
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.0",
+    "@tailwindcss/vite": "^4.1.8",
+    "concurrently": "^9.1.2",
+    "graphql": "^16.11.0",
     "react-router-dom": "^7.6.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.8",
+    "wait-on": "^8.0.3"
   }
 }
