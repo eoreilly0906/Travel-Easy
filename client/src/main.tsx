@@ -9,11 +9,11 @@ import Login from './pages/Login';
 import SingleThought from './pages/SingleThought';
 import Profile from './pages/Profile';
 import ErrorPage from './pages/Error';
-import ThingsToDo from './pages/ThingsToDo.tsx';
+import Landing from './pages/Landing';
+import ThingsToDo from './pages/ThingsToDo';
 import Parks from './pages/Parks';
 import FlightSearch from './pages/FlightSearch';
 import SavedFlights from './pages/SavedFlights';
-import Landing from './pages/Landing';
 
 const router = createBrowserRouter([
   {
