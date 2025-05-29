@@ -1,16 +1,17 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readdirSync, existsSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import type { Request, Response } from 'express';
 import cors from 'cors';
-import db from './config/connection.js';
+import db from './config/connection.ts';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { typeDefs, resolvers } from './schemas/index.js';
-import { authContext } from './utils/auth.js';
-import flightRoutes from './routes/flightRoutes.js';
-import savedFlightRoutes from './routes/savedFlightRoutes.js';
+import { typeDefs, resolvers } from './schemas/index.ts';
+import { authContext } from './utils/auth.ts';
+import flightRoutes from './routes/flightRoutes.ts';
+import savedFlightRoutes from './routes/savedFlightRoutes.ts';
+import weatherRoutes from './routes/weatherRoutes.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,32 +46,46 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  // REST API routes
+  // API routes - these must come before any static file serving
   app.use('/api/flights', flightRoutes);
   app.use('/api/saved-flights', savedFlightRoutes);
-
+  app.use('/api/weather', weatherRoutes);
   app.use('/graphql', expressMiddleware(server as any, {
     context: authContext
   }));
 
-  // Always serve static files in production
-  const clientDistPath = path.join(__dirname, '../../client/dist');
-  console.log('Current directory:', __dirname);
-  console.log('Serving static files from:', clientDistPath);
-  console.log('Directory contents:', readdirSync(clientDistPath));
-  
-  app.use(express.static(clientDistPath));
+  // Serve static files only in production
+  if (process.env.NODE_ENV === 'production') {
+    const clientDistPath = path.join(__dirname, '../../client/dist');
+    if (existsSync(clientDistPath)) {
+      // Serve static files
+      app.use(express.static(clientDistPath));
+      
+      // Handle client-side routing - this must be the last route
+      app.get('*', (_req: Request, res: Response) => {
+        const indexPath = path.join(clientDistPath, 'index.html');
+        if (existsSync(indexPath)) {
+          res.sendFile(indexPath);
+        } else {
+          res.status(404).json({ message: 'Not found' });
+        }
+      });
+    }
+  }
 
-  app.get('*', (_req: Request, res: Response) => {
-    const indexPath = path.join(clientDistPath, 'index.html');
-    console.log('Serving index.html from:', indexPath);
-    console.log('File exists:', existsSync(indexPath));
-    res.sendFile(indexPath);
+  // Error handling middleware
+  app.use((err: any, _req: Request, res: Response, _next: Function) => {
+    console.error('Server Error:', err);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   });
 
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
     console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   });
 };
 
