@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Testimonial.css'; 
-
 
 
 type Testimonial = {
@@ -13,10 +12,23 @@ const Testimonial: React.FC = () => {
   const [message, setMessage] = useState('');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+    fetch('http://localhost:3001/api/testimonials')
+      .then(res => res.json())
+      .then(data => setTestimonials(data))
+      .catch(err => console.error('Fetch error:', err));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !message) return;
+
+    await fetch('http://localhost:3001/api/testimonials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message }),
+    });
 
     const newTestimonial: Testimonial = { name, message };
     setTestimonials([newTestimonial, ...testimonials]);

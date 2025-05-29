@@ -10,6 +10,7 @@ import { typeDefs, resolvers } from './schemas/index.js';
 import { authContext } from './utils/auth.js';
 import flightRoutes from './routes/flightRoutes.js';
 import savedFlightRoutes from './routes/savedFlightRoutes.js';
+import testimonialRoutes from './routes/testimonial.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const server = new ApolloServer({
@@ -40,6 +41,7 @@ const startApolloServer = async () => {
     // REST API routes
     app.use('/api/flights', flightRoutes);
     app.use('/api/saved-flights', savedFlightRoutes);
+    app.use('/api/testimonials', testimonialRoutes);
     app.use('/graphql', expressMiddleware(server, {
         context: authContext
     }));

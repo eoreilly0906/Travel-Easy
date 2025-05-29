@@ -1,4 +1,6 @@
 /* Testimonial.css */
+@import "tailwindcss";
+
 
 .testimonial-container {
   max-width: 700px;
@@ -32,7 +34,7 @@
 }
 
 .testimonial-form button {
-  background-color: #2563eb;
+
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -41,7 +43,7 @@
 }
 
 .testimonial-form button:hover {
-  background-color: #1d4ed8;
+
 }
 
 .your-name {
@@ -76,6 +78,3 @@
   margin-top: 0.5rem;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
