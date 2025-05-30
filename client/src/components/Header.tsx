@@ -22,44 +22,13 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav>
-            {Auth.loggedIn() ? (
-              <>
-                <Nav.Link onClick={logout} className="logout-link">
-                  <i className="fas fa-sign-out-alt"></i> Logout
-                </Nav.Link>
-                <Nav.Link 
-                  as={Link} 
-                  to="/saved-flights" 
-                  className={isActive('/saved-flights') ? 'active' : ''}
-                >
-                  <i className="fas fa-heart"></i> Saved Flights
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link 
-                  as={Link} 
-                  to="/signup" 
-                  className={isActive('/signup') ? 'active' : ''}
-                >
-                  <i className="fas fa-user-plus"></i> Signup
-                </Nav.Link>
-                <Nav.Link 
-                  as={Link} 
-                  to="/login" 
-                  className={isActive('/login') ? 'active' : ''}
-                >
-                  <i className="fas fa-sign-in-alt"></i> Login
-                </Nav.Link>
-              </>
-            )}
+          <Nav className="ms-auto">
             <Nav.Link 
               as={Link} 
-              to="/testimonial" 
-              className={isActive('/testimonial') ? 'active' : ''}
+              to="/home" 
+              className={isActive('/home') ? 'active' : ''}
             >
-              <i className="fas fa-comment"></i> Testimonials
+              <i className="fas fa-home"></i> Home
             </Nav.Link>
             <Nav.Link 
               as={Link} 
@@ -70,11 +39,42 @@ const Header = () => {
             </Nav.Link>
             <Nav.Link 
               as={Link} 
-              to="/home" 
-              className={isActive('/home') ? 'active' : ''}
+              to="/testimonial" 
+              className={isActive('/testimonial') ? 'active' : ''}
             >
-              <i className="fas fa-home"></i> Home
+              <i className="fas fa-comment"></i> Testimonials
             </Nav.Link>
+            {Auth.loggedIn() ? (
+              <>
+                <Nav.Link 
+                  as={Link} 
+                  to="/saved-flights" 
+                  className={isActive('/saved-flights') ? 'active' : ''}
+                >
+                  <i className="fas fa-heart"></i> Saved Flights
+                </Nav.Link>
+                <Nav.Link onClick={logout} className="logout-link">
+                  <i className="fas fa-sign-out-alt"></i> Logout
+                </Nav.Link>
+              </>
+            ) : (
+              <>
+                <Nav.Link 
+                  as={Link} 
+                  to="/login" 
+                  className={isActive('/login') ? 'active' : ''}
+                >
+                  <i className="fas fa-sign-in-alt"></i> Login
+                </Nav.Link>
+                <Nav.Link 
+                  as={Link} 
+                  to="/signup" 
+                  className={isActive('/signup') ? 'active' : ''}
+                >
+                  <i className="fas fa-user-plus"></i> Signup
+                </Nav.Link>
+              </>
+            )}
           </Nav>
           {Auth.loggedIn() && (
             <div className="user-profile">
