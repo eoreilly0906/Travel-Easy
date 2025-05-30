@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { getWeatherIconClass } from '../utils/iconMap';
-//import '../assets/weather-icons.css';
-//import 'weather-icons/css/weather-icons.css';
 import './weatherForecast.css'; 
 import AnimatedCursor from './AnimatedCursor';
 
