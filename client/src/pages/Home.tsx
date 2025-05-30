@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import ThoughtList from '../components/ThoughtList';
-import ThoughtForm from '../components/ThoughtForm';
 import WeatherForecast from '../components/WeatherForecast';
 import { fetchCityForecast } from '../utils/weatherRest'; // Updated import
 import 'weather-icons/css/weather-icons.css';
@@ -63,15 +61,7 @@ const Home = () => {
           {forecast && <WeatherForecast forecast={forecast} />}
         </div>
 
-        {/* Thought Form */}
-        <div className="col-12 col-md-10 mb-3 p-3 border-dotted border">
-          <ThoughtForm />
-        </div>
-
-        {/* Thought List */}
-        <div className="col-12 col-md-8 mb-3">
-          <ThoughtList title="Some Feed for Thought(s)..." thoughts={[]} />
-        </div>
+    
       </div>
     </main>
   );
