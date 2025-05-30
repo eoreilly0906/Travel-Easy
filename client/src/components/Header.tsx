@@ -70,13 +70,6 @@ const Header = () => {
             </Nav.Link>
             <Nav.Link 
               as={Link} 
-              to="/flights" 
-              className={isActive('/flights') ? 'active' : ''}
-            >
-              <i className="fas fa-search"></i> Search Flights
-            </Nav.Link>
-            <Nav.Link 
-              as={Link} 
               to="/home" 
               className={isActive('/home') ? 'active' : ''}
             >
