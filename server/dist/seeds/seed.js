@@ -1,30 +1,20 @@
-import db from '../config/connection.js';
-import { Thought, User } from '../models/index.js';
-import cleanDB from './cleanDB.js';
-import bcrypt from 'bcrypt';
-import userData from './userData.json' with { type: 'json' };
-import thoughtData from './thoughtData.json' with { type: 'json' };
-const seedDatabase = async () => {
+import { User } from '../models/index.js';
+import mongoose from 'mongoose';
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/travel-easy');
+const seedUsers = async () => {
     try {
-        await db();
-        await cleanDB();
-        // Hash passwords before inserting users
-        const hashedUserData = await Promise.all(userData.map(async (user) => {
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-            return {
-                ...user,
-                password: hashedPassword
-            };
-        }));
-        await Thought.insertMany(thoughtData);
-        await User.insertMany(hashedUserData);
-        console.log('Seeding completed successfully!');
+        await User.deleteMany({});
+        await User.create({
+            username: 'testuser',
+            email: 'test@test.com',
+            password: 'password123',
+        });
+        console.log('Users seeded!');
         process.exit(0);
     }
-    catch (error) {
-        console.error('Error seeding database:', error);
+    catch (err) {
+        console.error(err);
         process.exit(1);
     }
 };
-seedDatabase();
+seedUsers();

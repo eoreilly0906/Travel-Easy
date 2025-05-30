@@ -18,13 +18,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
         minlength: 5,
-    },
-    thoughts: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Thought',
-        },
-    ],
+    }
 }, {
     timestamps: true,
     toJSON: { getters: true },

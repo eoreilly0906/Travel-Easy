@@ -7,6 +7,12 @@ interface UserArgs {
   username: string;
 }
 
+interface AuthUser {
+  _id: string;
+  username: string;
+  email: string;
+}
+
 const NPS_API_KEY = process.env.NPS_API_KEY;
 
 const resolvers = {
@@ -17,7 +23,7 @@ const resolvers = {
     user: async (_parent: any, { username }: UserArgs) => {
       return User.findOne({ username });
     },
-    me: async (_parent: any, _args: any, context: any) => {
+    me: async (_parent: any, _args: any, context: { user: AuthUser }) => {
       if (context.user) {
         return User.findOne({ _id: context.user._id });
       }
@@ -38,7 +44,7 @@ const resolvers = {
   Mutation: {
     addUser: async (_parent: any, { input }: { input: { username: string; email: string; password: string } }) => {
       const user = await User.create(input);
-      const token = signToken(user);
+      const token = signToken(user as unknown as AuthUser);
       return { token, user };
     },
     login: async (_parent: any, { email, password }: { email: string; password: string }) => {
@@ -54,7 +60,7 @@ const resolvers = {
         throw new AuthenticationError('Incorrect credentials');
       }
 
-      const token = signToken(user);
+      const token = signToken(user as unknown as AuthUser);
 
       return { token, user };
     },

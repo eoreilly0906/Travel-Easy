@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './style.css';
 
 interface WeatherData {
@@ -8,11 +8,6 @@ interface WeatherData {
   windSpeed: number;
   city: string;
   icon: string;
-}
-
-interface ErrorResponse {
-  message: string;
-  details?: string;
 }
 
 const Weather: React.FC = () => {
