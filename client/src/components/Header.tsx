@@ -24,6 +24,13 @@ const Header = () => {
           <Nav className="me-auto">
             <Nav.Link 
               as={Link} 
+              to="/home" 
+              className={isActive('/home') ? 'active' : ''}
+            >
+              <i className="fas fa-home"></i> Home
+            </Nav.Link>
+            <Nav.Link 
+              as={Link} 
               to="/flights" 
               className={isActive('/flights') ? 'active' : ''}
             >
@@ -51,13 +58,6 @@ const Header = () => {
                   className={isActive('/saved-flights') ? 'active' : ''}
                 >
                   <i className="fas fa-heart"></i> Saved Flights
-                </Nav.Link>
-                <Nav.Link 
-                  as={Link} 
-                  to="/profile" 
-                  className={isActive('/profile') ? 'active' : ''}
-                >
-                  <i className="fas fa-user"></i> Profile
                 </Nav.Link>
                 <Nav.Link onClick={logout} className="logout-link">
                   <i className="fas fa-sign-out-alt"></i> Logout
