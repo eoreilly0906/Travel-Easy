@@ -13,16 +13,19 @@ const images = [
 "https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/df/d0/e9.jpg" // Dunn River Falls
 ];
 
-  const descriptions = [
-    "The Eiffel Tower, Paris – a symbol of romance and elegance in the heart of France.",
-    "The Great Wall of China – an awe-inspiring feat of ancient engineering stretching thousands of miles.",
-    "Machu Picchu, Peru – a breathtaking mountaintop Incan city shrouded in mystery and history.",
-    "Sydney Opera House, Australia – an architectural masterpiece and hub of culture by the harbor.",
-    "The Taj Mahal, India – a white marble mausoleum built as a testament to eternal love.",
-    "The Colosseum, Rome – a gladiatorial arena and enduring symbol of Ancient Roman grandeur.",
-    "Statue of Liberty, New York – a global beacon of freedom and a landmark of the American dream.",
-    "Dunn River Falls, Jamaica – a stunning natural waterfall cascading through lush tropicals."
-  ];
+
+
+const descriptions = [
+  
+  "The Eiffel Tower, Paris – a symbol of romance and elegance in the heart of France.",
+  "The Great Wall of China – an awe-inspiring feat of ancient engineering stretching thousands of miles.",
+  "Machu Picchu, Peru – a breathtaking mountaintop Incan city shrouded in mystery and history.",
+  "Sydney Opera House, Australia – an architectural masterpiece and hub of culture by the harbor.",
+  "The Taj Mahal, India – a white marble mausoleum built as a testament to eternal love.",
+  "The Colosseum, Rome – a gladiatorial arena and enduring symbol of Ancient Roman grandeur.",
+  "Statue of Liberty, New York – a global beacon of freedom and a landmark of the American dream.",
+  "Dunn River Falls, Jamaica – a stunning natural waterfall cascading through lush tropicals."
+];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
