@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, Container, Nav, Image } from 'react-bootstrap';
 import Auth from '../utils/auth';
+import './Header.css';
 
 const Header = () => {
   const location = useLocation();
@@ -21,13 +22,13 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
+          <Nav className="ms-auto">
             <Nav.Link 
               as={Link} 
-              to="/flights" 
-              className={isActive('/flights') ? 'active' : ''}
+              to="/home" 
+              className={isActive('/home') ? 'active' : ''}
             >
-              <i className="fas fa-search"></i> Search Flights
+              <i className="fas fa-home"></i> Home
             </Nav.Link>
             <Nav.Link 
               as={Link} 
@@ -51,13 +52,6 @@ const Header = () => {
                   className={isActive('/saved-flights') ? 'active' : ''}
                 >
                   <i className="fas fa-heart"></i> Saved Flights
-                </Nav.Link>
-                <Nav.Link 
-                  as={Link} 
-                  to="/profile" 
-                  className={isActive('/profile') ? 'active' : ''}
-                >
-                  <i className="fas fa-user"></i> Profile
                 </Nav.Link>
                 <Nav.Link onClick={logout} className="logout-link">
                   <i className="fas fa-sign-out-alt"></i> Logout

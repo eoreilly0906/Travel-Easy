@@ -1,14 +1,14 @@
 .custom-navbar {
-  background: linear-gradient(135deg, #2d3e50 0%, #1bbc9b 100%) !important;
-  padding: 0.5rem 0;
+  background: linear-gradient(135deg, #2d3e50 0%, #1a1a1a 100%) !important;
+  padding: 0.75rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .brand-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
+  gap: 0.75rem;
+  font-size: 1.75rem;
   font-weight: 600;
   color: #ffffff !important;
   text-decoration: none;
@@ -20,7 +20,7 @@
 }
 
 .brand-icon {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #1bbc9b;
 }
 
@@ -31,29 +31,49 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
+.navbar-collapse {
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .nav-link {
-  color: rgba(255, 255, 255, 0.85) !important;
-  padding: 0.5rem 1rem !important;
-  margin: 0 0.2rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  color: #ffffff !important;
+  padding: 0.55rem 0.95rem !important;
+  margin: 0;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
 }
 
 .nav-link:hover {
   color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .nav-link.active {
   color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.2);
-  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .nav-link i {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
+  margin-right: 0.45rem;
+  font-size: 0.9rem;
 }
 
 .logout-link {
@@ -61,7 +81,7 @@
 }
 
 .logout-link:hover {
-  background-color: rgba(230, 76, 102, 0.1) !important;
+  background-color: rgba(230, 76, 102, 0.15) !important;
 }
 
 .custom-toggler {
@@ -75,16 +95,16 @@
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  margin-left: 1.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
   transition: transform 0.2s ease;
 }
 
@@ -95,19 +115,32 @@
 .username {
   color: #ffffff;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 @media (max-width: 991.98px) {
+  .navbar-collapse {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .nav-link {
+    padding: 0.65rem 0.95rem !important;
+    margin: 0.25rem 0;
+    width: 100%;
+    text-align: left;
+  }
+
   .user-profile {
     margin: 1rem 0;
     padding: 1rem;
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .nav-link {
-    padding: 0.75rem 1rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
   }
 }
 
