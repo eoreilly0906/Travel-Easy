@@ -1,17 +1,13 @@
-import { Thought, User } from '../models/index.js';
-import process from 'process';
+import { User } from '../models/index.js';
+import mongoose from 'mongoose';
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/travel-easy');
 const cleanDB = async () => {
     try {
-        // Delete documents from THought collection
-        await Thought.deleteMany({});
-        console.log('Thought collection cleaned.');
-        // Delete documents from User collection
         await User.deleteMany({});
-        console.log('User collection cleaned.');
+        console.log('All users deleted');
     }
     catch (err) {
-        console.error('Error cleaning collections:', err);
-        process.exit(1);
+        console.error(err);
     }
 };
-export default cleanDB;
+cleanDB();
