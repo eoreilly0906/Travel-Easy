@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import WeatherForecast from '../components/WeatherForecast';
 import { fetchCityForecast } from '../utils/weatherRest'; // Updated import
-import 'weather-icons/css/weather-icons.css';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [city, setCity] = useState('');
@@ -61,7 +61,18 @@ const Home = () => {
           {forecast && <WeatherForecast forecast={forecast} />}
         </div>
 
-    
+        <div
+          className="col-12 col-md-10 mb-3 p-3"
+          style={{ border: '1px dotted #1a1a1a' }}
+        >
+          <Link to="/thingstodo" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
+            Things to Do
+          </Link>
+
+          <Link to="/flights" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
+            Search Flights
+          </Link>
+        </div>
       </div>
     </main>
   );

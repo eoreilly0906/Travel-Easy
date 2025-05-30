@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Testimonial.css'; 
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 type Testimonial = {
   name: string;
@@ -12,8 +13,8 @@ const Testimonial: React.FC = () => {
   const [message, setMessage] = useState('');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
-    useEffect(() => {
-    fetch('http://localhost:3001/api/testimonials')
+  useEffect(() => {
+    fetch(`${API_URL}/api/testimonials`)
       .then(res => res.json())
       .then(data => setTestimonials(data))
       .catch(err => console.error('Fetch error:', err));
@@ -24,7 +25,7 @@ const Testimonial: React.FC = () => {
 
     if (!name || !message) return;
 
-    await fetch('http://localhost:3001/api/testimonials', {
+    await fetch(`${API_URL}/api/testimonials`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, message }),

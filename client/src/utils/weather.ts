@@ -3,7 +3,7 @@ const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 console.log("Loaded OpenWeather API Key:", API_KEY);
 
 export const fetchWeatherForecast = async (lat: number, lon: number) => {
-  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${API_KEY}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch forecast');
   return res.json();
