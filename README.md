@@ -135,4 +135,4 @@ This project is licensed under the ISC License.
 
 ---
 
-Built with ❤️ by [The Team that brought you HoroScoop and Munchmap!]
+Travel Easy was built with ❤️ by [The Team that brought you HoroScoop and Munchmap!]
