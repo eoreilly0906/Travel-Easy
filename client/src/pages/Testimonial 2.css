@@ -1,0 +1,80 @@
+/* Testimonial.css */
+@import "tailwindcss";
+
+
+.testimonial-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.testimonial-form label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.testimonial-form input,
+.testimonial-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.testimonial-form button {
+
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.testimonial-form button:hover {
+
+}
+
+.your-name {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+.your-comment {
+   font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.testimonial-list {
+  margin-top: 2rem;
+}
+
+.testimonial-item {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.testimonial-message {
+  font-style: italic;
+  color: #374151;
+}
+
+.testimonial-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
