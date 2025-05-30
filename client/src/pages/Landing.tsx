@@ -91,7 +91,9 @@ const Landing = () => {
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg shadow-lg">
               <h3 className="text-xl font-bold mb-3 text-white">
                 <i className="fas fa-heart mr-2"></i>
-                Personalized
+                <div className="Personalized">
+                Personalized 
+                </div>
               </h3>
               <p className="text-indigo-200">
                 Customized recommendations based on your preferences and travel history.
