@@ -1,8 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Link } from 'react-router-dom';
 
-import App from './App.jsx';
+import App from './App';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
@@ -68,10 +67,3 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
 }
-
-// Example Button linking to the Things to Do page
-<Link to="/things-to-do">
-  <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-    Explore Things to Do
-  </button>
-</Link>

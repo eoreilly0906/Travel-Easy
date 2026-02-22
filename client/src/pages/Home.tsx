@@ -72,6 +72,10 @@ const Home = () => {
           <Link to="/flights" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
             Search Flights
           </Link>
+
+          <Link to="/saved-flights" className="btn btn-primary mb-3" style={{ display: 'block', width: '100%' }}>
+            Saved Flights
+          </Link>
         </div>
       </div>
     </main>
